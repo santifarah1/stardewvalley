@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wiki Offline · Stardew Valley</title>
+<style>
+:root{
+  --bg:#1a2b1a; --panel:#27432a; --panel2:#2f5233; --line:#3d6b42;
+  --txt:#f0ead6; --dim:#a8c0a0; --acc:#e8b04a; --acc2:#7fb069; --rare:#c77dff;
+  --water:#5b8dbf; --craft:#d98c5f; --food:#e07a7a; --bundle:#d4b94a; --animal:#cf9b6d;
+}
+*{box-sizing:border-box; margin:0; padding:0}
+body{
+  font-family:'Trebuchet MS','Segoe UI',sans-serif; background:var(--bg);
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(127,176,105,.08) 0, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(232,176,74,.06) 0, transparent 40%);
+  color:var(--txt); min-height:100vh; line-height:1.5;
+}
+header{
+  background:var(--panel); border-bottom:3px solid var(--acc);
+  padding:16px; text-align:center; position:sticky; top:0; z-index:10;
+  box-shadow:0 4px 12px rgba(0,0,0,.4);
+}
+header h1{font-size:1.55rem; color:var(--acc); letter-spacing:1px; text-shadow:2px 2px 0 #000}
+header p{color:var(--dim); font-size:.82rem; margin-top:2px}
+.wrap{max-width:960px; margin:0 auto; padding:14px}
+#search{
+  width:100%; padding:13px 16px; font-size:1rem; border-radius:10px;
+  border:2px solid var(--line); background:var(--panel2); color:var(--txt);
+  margin-bottom:12px; font-family:inherit;
+}
+#search:focus{outline:none; border-color:var(--acc); box-shadow:0 0 0 3px rgba(232,176,74,.2)}
+#search::placeholder{color:var(--dim)}
+.tabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px}
+.tab{
+  flex:1 1 auto; min-width:78px; padding:9px 6px; border:2px solid var(--line);
+  background:var(--panel2); color:var(--dim); border-radius:10px; cursor:pointer;
+  font-family:inherit; font-size:.78rem; font-weight:bold; transition:.15s; text-align:center;
+}
+.tab:hover{border-color:var(--acc2); color:var(--txt)}
+.tab.on{background:var(--acc); color:#1a2b1a; border-color:var(--acc)}
+.count{color:var(--dim); font-size:.75rem; margin:8px 2px 14px}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:11px}
+.card{
+  background:var(--panel); border:2px solid var(--line); border-radius:12px;
+  padding:13px; cursor:pointer; transition:.15s; position:relative; overflow:hidden;
+}
+.card:hover{border-color:var(--acc); transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.35)}
+.card h3{color:var(--acc); font-size:1rem; margin-bottom:5px; padding-right:64px}
+.card .meta{font-size:.76rem; color:var(--dim); margin-bottom:5px}
+.card .snippet{font-size:.83rem; color:var(--txt); opacity:.85; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+.badge{position:absolute; top:11px; right:11px; font-size:.62rem; padding:3px 8px; border-radius:20px; font-weight:bold; background:var(--acc2); color:#13230f}
+.badge.rare{background:var(--rare); color:#1a0a2a}
+.badge.fish{background:var(--water); color:#fff}
+.badge.craft{background:var(--craft); color:#2a1206}
+.badge.food{background:var(--food); color:#2a0808}
+.badge.bundle{background:var(--bundle); color:#2a2206}
+.badge.animal{background:var(--animal); color:#2a1606}
+.empty{text-align:center; color:var(--dim); padding:40px 20px; font-style:italic}
+.guide{background:var(--panel); border:2px solid var(--line); border-radius:12px; padding:15px; margin-bottom:13px}
+.guide h3{color:var(--acc2); font-size:1.15rem; margin-bottom:4px}
+.guide .sub{color:var(--dim); font-size:.84rem; margin-bottom:10px}
+.guide ol{margin-left:18px; display:flex; flex-direction:column; gap:7px}
+.guide li{font-size:.88rem}
+.overlay{position:fixed; inset:0; background:rgba(0,0,0,.72); display:none; align-items:center; justify-content:center; z-index:50; padding:16px}
+.overlay.show{display:flex}
+.modal{
+  background:var(--panel); border:3px solid var(--acc); border-radius:16px;
+  max-width:500px; width:100%; max-height:86vh; overflow-y:auto; padding:22px;
+  box-shadow:0 10px 40px rgba(0,0,0,.6);
+}
+.modal h2{color:var(--acc); font-size:1.45rem; margin-bottom:4px; padding-right:30px}
+.modal .kind{color:var(--acc2); font-size:.78rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px; font-weight:bold}
+.modal .row{display:flex; justify-content:space-between; gap:10px; padding:8px 0; border-bottom:1px solid var(--line); font-size:.88rem}
+.modal .row span:first-child{color:var(--dim); flex-shrink:0}
+.modal .row span:last-child{color:var(--txt); text-align:right; font-weight:bold}
+.block{margin-top:15px}
+.block .label{color:var(--acc); font-size:.76rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:5px; font-weight:bold}
+.block p{font-size:.9rem; line-height:1.55}
+.tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px}
+.tag{background:var(--panel2); border:1px solid var(--line); border-radius:20px; padding:4px 11px; font-size:.76rem}
+.tag.love{border-color:var(--acc2)}
+.tag.hate{border-color:#b05050; color:#e0a0a0}
+.close{position:sticky; top:-4px; float:right; background:var(--panel2); border:2px solid var(--line); color:var(--txt); width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:1.1rem; margin:-8px -8px 0 0}
+.close:hover{border-color:var(--acc); color:var(--acc)}
+footer{text-align:center; color:var(--dim); font-size:.74rem; padding:22px 16px 38px; line-height:1.6}
+</style>
+</head>
+<body>
+<header>
+  <h1>🌿 Wiki de Stardew Valley</h1>
+  <p>Consulta offline · qué es cada cosa, para qué sirve y guías de progreso</p>
+</header>
+<div class="wrap">
+  <input id="search" type="text" placeholder="🔍 Buscar (ej: arándano, Abigail, iridio, pizza, vaca, invernadero)..." autocomplete="off">
+  <div class="tabs" id="tabs"></div>
+  <div class="count" id="count"></div>
+  <div id="content"></div>
+</div>
+<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+<footer>Datos basados en es.stardewvalleywiki.com · App offline de un solo archivo<br>Selección curada y ampliable editando el objeto DB del código</footer>
+<script>
+// ===== Base de datos Stardew Valley (ampliada con datos de es.stardewvalleywiki.com) =====
+const DB = {
+ "cultivos": [
+  {
+   "n": "Chirivía",
+   "est": "Primavera",
+   "dias": 4,
+   "semilla": 20,
+   "venta": 35,
+   "tipo": "Único",
+   "desc": "El cultivo más básico de primavera. Barato y muy rápido. Con el que arrancás el juego (15 semillas iniciales).",
+   "uso": "Vender, Chirivía con queso, regalar a Lewis. Necesaria para el Lote de Cultivos de Primavera."
+  },
+  {
+   "n": "Judía verde",
+   "est": "Primavera",
+   "dias": 10,
+   "semilla": 60,
+   "venta": 40,
+   "tipo": "Repetible (3d)",
+   "desc": "Necesita enrejado. Tras la primera cosecha sigue produciendo cada 3 días sin replantar. Ideal para 'vagos'.",
+   "uso": "Vender continuo, Lote de Cultivos de Primavera. Plantala temprano para amortizar."
+  },
+  {
+   "n": "Coliflor",
+   "est": "Primavera",
+   "dias": 12,
+   "semilla": 80,
+   "venta": 175,
+   "tipo": "Único",
+   "desc": "Tarda bastante pero da buen valor. Puede volverse Cultivo Gigante si juntás 9 en cuadrícula 3x3.",
+   "uso": "Vender, Lote de Cultivos de Primavera, Lote de Calidad (oro)."
+  },
+  {
+   "n": "Patata",
+   "est": "Primavera",
+   "dias": 6,
+   "semilla": 50,
+   "venta": 80,
+   "tipo": "Único",
+   "desc": "Crece rápido y se vende bien. ~25% de chance de cosechar una patata extra, lo que sube mucho su rentabilidad.",
+   "uso": "Vender, Lote de Cultivos de Primavera, cocina (Hash browns)."
+  },
+  {
+   "n": "Col rizada (Kale)",
+   "est": "Primavera",
+   "dias": 6,
+   "semilla": 70,
+   "venta": 110,
+   "tipo": "Único",
+   "desc": "Se cosecha con guadaña. Buen margen para principio de año.",
+   "uso": "Vender, cocinar."
+  },
+  {
+   "n": "Tulipán",
+   "est": "Primavera",
+   "dias": 6,
+   "semilla": 20,
+   "venta": 30,
+   "tipo": "Único",
+   "desc": "Flor barata de primavera. Sirve para miel teñida si hay colmenas cerca.",
+   "uso": "Regalar, miel coloreada, decorar."
+  },
+  {
+   "n": "Fresa",
+   "est": "Primavera",
+   "dias": 8,
+   "semilla": 100,
+   "venta": 120,
+   "tipo": "Repetible (4d)",
+   "desc": "La REINA de la primavera. Solo se compran sus semillas en el Festival del Huevo (día 13). Repite cada 4 días.",
+   "uso": "Comprá todas las que puedas el día 13 para plantar; rentabilidad enorme en año 2."
+  },
+  {
+   "n": "Ruibarbo",
+   "est": "Primavera",
+   "dias": 13,
+   "semilla": 100,
+   "venta": 220,
+   "tipo": "Único",
+   "desc": "Se compra en el Oasis del desierto. Alto valor pero requiere acceso al desierto.",
+   "uso": "Vender, vino de ruibarbo (muy rentable)."
+  },
+  {
+   "n": "Allium azul",
+   "est": "Primavera",
+   "dias": 6,
+   "semilla": "Oasis",
+   "venta": 50,
+   "tipo": "Único",
+   "desc": "Flor del desierto. Disponible en el Oasis.",
+   "uso": "Vender, decorar, miel."
+  },
+  {
+   "n": "Grano de café",
+   "est": "Primavera/Verano",
+   "dias": 10,
+   "semilla": "Rara",
+   "venta": 15,
+   "tipo": "Repetible (2d)",
+   "desc": "Cada planta da 4 granos. 5 granos en barril = 1 Café (energía +velocidad).",
+   "uso": "Hacer Café, vender como expreso. Guardá granos para replantar."
+  },
+  {
+   "n": "Zanahoria",
+   "est": "Primavera",
+   "dias": 3,
+   "semilla": "Recolección",
+   "venta": 35,
+   "tipo": "Único",
+   "desc": "Cultivo de la 1.6. Semillas de recolección de raíces silvestres. Crece muy rápido.",
+   "uso": "Vender, cocina, gigante posible."
+  },
+  {
+   "n": "Arándano",
+   "est": "Verano",
+   "dias": 13,
+   "semilla": 80,
+   "venta": 50,
+   "tipo": "Repetible (4d)",
+   "desc": "Da 3 arándanos por cosecha cada 4 días. Rentabilidad altísima por temporada por la cantidad.",
+   "uso": "Vender en masa, mermelada, vino. Top de verano costo-beneficio."
+  },
+  {
+   "n": "Melón",
+   "est": "Verano",
+   "dias": 12,
+   "semilla": 80,
+   "venta": 250,
+   "tipo": "Único",
+   "desc": "De los más rentables de verano. Cultivo Gigante posible (3x3). Le encanta a varios aldeanos.",
+   "uso": "Vender, Lote de Calidad (oro), regalar."
+  },
+  {
+   "n": "Tomate",
+   "est": "Verano",
+   "dias": 11,
+   "semilla": 50,
+   "venta": 60,
+   "tipo": "Repetible (4d)",
+   "desc": "Repite cada 4 días. Versátil. Crece también en invernadero todo el año.",
+   "uso": "Vender, jugo, pizza, Lote de Verano."
+  },
+  {
+   "n": "Maíz",
+   "est": "Verano/Otoño",
+   "dias": 14,
+   "semilla": 150,
+   "venta": 50,
+   "tipo": "Repetible (4d)",
+   "desc": "Sobrevive de verano a otoño sin replantar. Base para Aceite. Semillas caras: solo rinde si lo plantás día 1.",
+   "uso": "Aceite (prensa), Lote de Otoño, tortillas."
+  },
+  {
+   "n": "Pimiento picante (Chile)",
+   "est": "Verano",
+   "dias": 5,
+   "semilla": 40,
+   "venta": 40,
+   "tipo": "Repetible (3d)",
+   "desc": "Crece rápido y repite cada 3 días. Le encanta a Shane y a Vincent.",
+   "uso": "Vender, regalar a Shane, Lote de Verano."
+  },
+  {
+   "n": "Trigo",
+   "est": "Verano/Otoño",
+   "dias": 4,
+   "semilla": 10,
+   "venta": 25,
+   "tipo": "Único (guadaña)",
+   "desc": "Barato y rapidísimo. Truco: plantalo a fin de verano para conservar tierra labrada y fertilizante al pasar a otoño.",
+   "uso": "Harina (molino), cerveza, paja. Trampa de transición de estación."
+  },
+  {
+   "n": "Rábano",
+   "est": "Verano",
+   "dias": 6,
+   "semilla": 40,
+   "venta": 90,
+   "tipo": "Único",
+   "desc": "Buen valor para lo barato que es. Crece rápido.",
+   "uso": "Vender, encurtido, cocina."
+  },
+  {
+   "n": "Girasol",
+   "est": "Verano/Otoño",
+   "dias": 8,
+   "semilla": 200,
+   "venta": 80,
+   "tipo": "Único",
+   "desc": "Da 0-3 semillas de girasol al cosechar (sirven para Aceite y replantar).",
+   "uso": "Aceite, regalar (a Haley le encanta), decorar."
+  },
+  {
+   "n": "Amapola",
+   "est": "Verano",
+   "dias": 7,
+   "semilla": 100,
+   "venta": 140,
+   "tipo": "Único",
+   "desc": "Flor roja vistosa. Ingrediente de cocina.",
+   "uso": "Vender, cocina, regalar, miel."
+  },
+  {
+   "n": "Lúpulo",
+   "est": "Verano",
+   "dias": 11,
+   "semilla": 60,
+   "venta": 25,
+   "tipo": "Repetible (1d)",
+   "desc": "Necesita enrejado. ¡Produce TODOS los días! Se convierte en Pale Ale, muy rentable en barril.",
+   "uso": "Pale Ale (tonel) = oro constante. Lote de tinta no, pero gran ingreso pasivo."
+  },
+  {
+   "n": "Lombarda (Red Cabbage)",
+   "est": "Verano",
+   "dias": 9,
+   "semilla": 100,
+   "venta": 260,
+   "tipo": "Único",
+   "desc": "Disponible desde año 2 (o Carro Ambulante). Alto valor.",
+   "uso": "Vender, Lote variado de calidad, cocina."
+  },
+  {
+   "n": "Carambola (Starfruit)",
+   "est": "Verano",
+   "dias": 13,
+   "semilla": 400,
+   "venta": 750,
+   "tipo": "Único",
+   "desc": "Uno de los cultivos MÁS rentables del juego. Semilla cara en el Oasis. Como vino, valor enorme.",
+   "uso": "Vino de carambola (premium), vender. Inversión de año 2+."
+  },
+  {
+   "n": "Calabaza",
+   "est": "Otoño",
+   "dias": 13,
+   "semilla": 100,
+   "venta": 320,
+   "tipo": "Único",
+   "desc": "Top de otoño. Cultivo Gigante posible. Clave para el Espíritu de la Cosecha y festivales.",
+   "uso": "Vender, gigante, jugo/pie, decoración."
+  },
+  {
+   "n": "Uva",
+   "est": "Otoño",
+   "dias": 10,
+   "semilla": 60,
+   "venta": 80,
+   "tipo": "Repetible (3d)",
+   "desc": "Necesita enrejado. Produce cada 3 días. Como Vino, ingreso fuerte en otoño/invierno.",
+   "uso": "Vino de uva (tonel), vender, Lote de Otoño."
+  },
+  {
+   "n": "Berenjena",
+   "est": "Otoño",
+   "dias": 5,
+   "semilla": 20,
+   "venta": 60,
+   "tipo": "Repetible (5d)",
+   "desc": "Barata, crece rápido y repite todo el otoño. Excelente costo-beneficio. Plantala una vez y olvidate.",
+   "uso": "Vender continuo, Lote de Otoño, Lote de Tinta."
+  },
+  {
+   "n": "Alcachofa",
+   "est": "Otoño",
+   "dias": 8,
+   "semilla": 30,
+   "venta": 160,
+   "tipo": "Único",
+   "desc": "Disponible desde año 2. Buen valor por semilla barata.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Grosella (Cranberry)",
+   "est": "Otoño",
+   "dias": 7,
+   "semilla": 240,
+   "venta": 75,
+   "tipo": "Repetible (5d)",
+   "desc": "Produce 2 grosellas por cosecha cada 5 días (+10% extra). Semilla cara pero altísimo rendimiento total.",
+   "uso": "Vender en volumen, vino/jalea, Lote de Otoño. Top de otoño."
+  },
+  {
+   "n": "Ñame (Yam)",
+   "est": "Otoño",
+   "dias": 10,
+   "semilla": 60,
+   "venta": 160,
+   "tipo": "Único",
+   "desc": "Buen valor. Le encanta a varios aldeanos.",
+   "uso": "Vender, Lote de Otoño, regalar."
+  },
+  {
+   "n": "Remolacha",
+   "est": "Otoño",
+   "dias": 6,
+   "semilla": "Oasis",
+   "venta": 100,
+   "tipo": "Único",
+   "desc": "Del Oasis. Se procesa en azúcar (molino) o vino.",
+   "uso": "Vender, azúcar, vino."
+  },
+  {
+   "n": "Col china (Bok choy)",
+   "est": "Otoño",
+   "dias": 4,
+   "semilla": 50,
+   "venta": 80,
+   "tipo": "Único",
+   "desc": "Crece rápido. Costo-beneficio decente.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Brócoli",
+   "est": "Otoño",
+   "dias": 8,
+   "semilla": "Recolección",
+   "venta": 70,
+   "tipo": "Repetible",
+   "desc": "Cultivo de la 1.6, de semillas de recolección. Repite.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Amaranto",
+   "est": "Otoño",
+   "dias": 7,
+   "semilla": 70,
+   "venta": 150,
+   "tipo": "Único (guadaña)",
+   "desc": "Se cosecha con guadaña. Buen valor.",
+   "uso": "Vender, cocina (Ensalada)."
+  },
+  {
+   "n": "Rosa hada (Fairy Rose)",
+   "est": "Otoño",
+   "dias": 12,
+   "semilla": 200,
+   "venta": 290,
+   "tipo": "Único",
+   "desc": "Flor cara y vistosa. La miel de Rosa hada es la más valiosa del juego.",
+   "uso": "Miel premium (colmena cerca), vender, regalo."
+  },
+  {
+   "n": "Fruta milenaria (Ancient Fruit)",
+   "est": "Pri/Ver/Oto",
+   "dias": 28,
+   "semilla": "Rara",
+   "venta": 550,
+   "tipo": "Repetible (7d)",
+   "desc": "De semilla rara (excavar, gusanos, semilla de la momia). Tarda en madurar pero luego produce cada 7 días. En invernadero o como Vino: dinero legendario.",
+   "uso": "Vino milenario (premium), invernadero lleno = economía resuelta. Reproducí semillas con sembradora de semillas."
+  },
+  {
+   "n": "Fruto Qi",
+   "est": "Especial",
+   "dias": 4,
+   "semilla": "Walnut Room",
+   "venta": 1,
+   "tipo": "Repetible (4d)",
+   "desc": "De Isla Jengibre (Qi). Crece muy rápido y se usa para misiones especiales de Qi.",
+   "uso": "Misiones de Qi, gigante posible. No se vende bien crudo."
+  },
+  {
+   "n": "Melón de polvo (Powdermelon)",
+   "est": "Invierno",
+   "dias": 7,
+   "semilla": "Recolección",
+   "venta": 60,
+   "tipo": "Único",
+   "desc": "¡El ÚNICO cultivo que crece afuera en invierno! De la 1.6, semillas de recolección invernal.",
+   "uso": "Vender, vino, único cultivo de invierno al aire libre."
+  },
+  {
+   "n": "Fibra vegetal",
+   "est": "Todas",
+   "dias": 7,
+   "semilla": "Recolección",
+   "venta": 1,
+   "tipo": "Único",
+   "desc": "Crece en cualquier estación. Se cosecha con guadaña para obtener Fibra.",
+   "uso": "Conseguir Fibra sin cortar pasto, crafteos."
+  }
+ ],
+ "peces": [
+  {
+   "n": "Besugo (Bream)",
+   "est": "Todas",
+   "lugar": "Río (Pueblo y Bosque)",
+   "clima": "Cualquiera",
+   "hora": "6pm-2am",
+   "dif": "Fácil",
+   "desc": "Pez de río nocturno disponible todo el año. Fácil de pescar.",
+   "uso": "Vender, cocina, paquetes de pesca."
+  },
+  {
+   "n": "Perca (Largemouth Bass)",
+   "est": "Todas",
+   "lugar": "Lago de la montaña",
+   "clima": "Cualquiera",
+   "hora": "6am-7pm",
+   "dif": "Media",
+   "desc": "Pez de lago de buen valor, disponible todo el año de día.",
+   "uso": "Vender, Lote de Pesca de Lago, cocina."
+  },
+  {
+   "n": "Carpa",
+   "est": "Todas (no invierno)",
+   "lugar": "Lagos/cloacas/estanques",
+   "clima": "Cualquiera",
+   "hora": "Cualquiera",
+   "dif": "Fácil",
+   "desc": "Muy común y de poco valor. Útil para subir nivel de pesca al inicio.",
+   "uso": "Vender barato, Fertilizante de calidad, estanque."
+  },
+  {
+   "n": "Pez fantasma",
+   "est": "Todas",
+   "lugar": "Minas (niveles 20 y 60)",
+   "clima": "Cualquiera",
+   "hora": "Cualquiera",
+   "dif": "Media",
+   "desc": "Pez de las minas. Necesario para el paquete especializado.",
+   "uso": "Aceite de oscuridad (estanque), Lote, cocina."
+  },
+  {
+   "n": "Bagre (Catfish)",
+   "est": "Primavera/Otoño",
+   "lugar": "Río / Bosque Secreto",
+   "clima": "Lluvia",
+   "hora": "6am-12am",
+   "dif": "Difícil",
+   "desc": "Solo con lluvia. Esquivo y valioso. Aparece en varios paquetes.",
+   "uso": "Vender, Lote de Pescador, regalo."
+  },
+  {
+   "n": "Salmón sombrío",
+   "est": "Todas",
+   "lugar": "Pantano de la Bruja",
+   "clima": "Cualquiera",
+   "hora": "Cualquiera",
+   "dif": "Difícil",
+   "desc": "Pez del pantano de la bruja, accesible tras desbloquear esa zona.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Lubina (Smallmouth Bass)",
+   "est": "Primavera/Otoño",
+   "lugar": "Río (Pueblo) / Estanque Bosque",
+   "clima": "Cualquiera",
+   "hora": "Cualquiera",
+   "dif": "Media",
+   "desc": "Pez de río común en primavera y otoño. Ideal para subir nivel al inicio.",
+   "uso": "Vender, paquete de pesca de río, cocina."
+  },
+  {
+   "n": "Pez sol (Sunfish)",
+   "est": "Primavera/Verano",
+   "lugar": "Río (Pueblo y Bosque)",
+   "clima": "Soleado/ventoso",
+   "hora": "6am-7pm",
+   "dif": "Fácil",
+   "desc": "De río, solo de día y con buen clima. Fácil. Necesario para varios paquetes.",
+   "uso": "Vender, Lote de Pesca de Río, cocina."
+  },
+  {
+   "n": "Trucha tigre (Tiger Trout)",
+   "est": "Otoño/Invierno",
+   "lugar": "Río",
+   "clima": "Cualquiera",
+   "hora": "6am-7pm",
+   "dif": "Media",
+   "desc": "De río en estaciones frías. Valor decente.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Anchoa",
+   "est": "Primavera/Otoño",
+   "lugar": "Océano",
+   "clima": "Cualquiera",
+   "hora": "Cualquiera",
+   "dif": "Fácil",
+   "desc": "Pez de mar pequeño, errático pero fácil. Abundante.",
+   "uso": "Vender, cebo (con la prensa), cocina."
+  },
+  {
+   "n": "Arenque (Herring)",
+   "est": "Primavera/Invierno",
+   "lugar": "Océano",
+   "clima": "Cualquiera",
+   "hora": "Cualquiera",
+   "dif": "Fácil",
+   "desc": "De mar, disponible en primavera e invierno.",
+   "uso": "Vender, cocina, paquetes."
+  },
+  {
+   "n": "Sardina",
+   "est": "Pri/Oto/Inv",
+   "lugar": "Océano",
+   "clima": "Cualquiera",
+   "hora": "6am-7pm",
+   "dif": "Fácil",
+   "desc": "Pez de mar pequeño y abundante. Ideal para principiantes.",
+   "uso": "Vender en cantidad, Lote del muelle, cocina (Sashimi)."
+  },
+  {
+   "n": "Anguila (Eel)",
+   "est": "Primavera/Otoño",
+   "lugar": "Océano",
+   "clima": "Lluvia",
+   "hora": "4pm-2am",
+   "dif": "Difícil",
+   "desc": "Nocturna y solo con lluvia. Movimiento muy errático (sube/baja de golpe).",
+   "uso": "Vender, Lote, regalo."
+  },
+  {
+   "n": "Trucha arcoíris",
+   "est": "Verano",
+   "lugar": "Río / Lago montaña",
+   "clima": "Soleado",
+   "hora": "6am-7pm",
+   "dif": "Media",
+   "desc": "Solo con sol en verano, de día. Vistosa y de buen valor.",
+   "uso": "Vender, Lote del Centro, cocina."
+  },
+  {
+   "n": "Pulpo (Octopus)",
+   "est": "Verano",
+   "lugar": "Océano",
+   "clima": "Cualquiera",
+   "hora": "6am-1pm",
+   "dif": "Difícil",
+   "desc": "De mar, solo a la mañana en verano. Movimiento de buceo. Lo adora algún aldeano.",
+   "uso": "Vender, estanque (tinta), Lote difícil."
+  },
+  {
+   "n": "Dorado",
+   "est": "Verano",
+   "lugar": "Río",
+   "clima": "Cualquiera",
+   "hora": "Cualquiera (día)",
+   "dif": "Difícil",
+   "desc": "De río, solo de día en verano. Rápido.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Atún",
+   "est": "Verano/Invierno",
+   "lugar": "Océano",
+   "clima": "Cualquiera",
+   "hora": "6am-7pm",
+   "dif": "Media",
+   "desc": "Pez grande de océano de día. Buen valor por unidad. En Isla Jengibre, todo el año.",
+   "uso": "Vender, cocina (Maki/Sashimi)."
+  },
+  {
+   "n": "Pez globo (Pufferfish)",
+   "est": "Verano",
+   "lugar": "Océano",
+   "clima": "Soleado",
+   "hora": "12pm-4pm",
+   "dif": "Difícil",
+   "desc": "Solo verano soleado al mediodía. Se infla y se queda quieto, luego se hunde. Lo adora algún aldeano y otros lo odian.",
+   "uso": "Vender, cocina (Maki de calidad)."
+  },
+  {
+   "n": "Salmonete (Red Mullet)",
+   "est": "Verano/Invierno",
+   "lugar": "Océano",
+   "clima": "Cualquiera",
+   "hora": "6am-7pm",
+   "dif": "Media",
+   "desc": "De mar, de día.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Tilapia",
+   "est": "Verano/Otoño",
+   "lugar": "Océano",
+   "clima": "Cualquiera",
+   "hora": "6am-2pm",
+   "dif": "Media",
+   "desc": "De mar, mañana y mediodía. En Isla Jengibre (río) todo el año.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Pargo colorado (Red Snapper)",
+   "est": "Ver/Oto/Inv",
+   "lugar": "Océano",
+   "clima": "Lluvia",
+   "hora": "6am-7pm",
+   "dif": "Media",
+   "desc": "De mar solo con lluvia de día. Buen valor.",
+   "uso": "Vender, Lote, cocina."
+  },
+  {
+   "n": "Superpepino (Super Cucumber)",
+   "est": "Verano/Otoño",
+   "lugar": "Océano",
+   "clima": "Cualquiera",
+   "hora": "6pm-2am",
+   "dif": "Difícil",
+   "desc": "De mar nocturno. Movimiento de buceo, esquivo.",
+   "uso": "Vender, estanque, cocina."
+  },
+  {
+   "n": "Esturión (Sturgeon)",
+   "est": "Verano/Invierno",
+   "lugar": "Lago de la montaña",
+   "clima": "Cualquiera",
+   "hora": "6am-7pm",
+   "dif": "Difícil",
+   "desc": "De lago, de día. El estanque de esturión produce huevas para Caviar (muy rentable).",
+   "uso": "Caviar (estanque), vender, Lote."
+  },
+  {
+   "n": "Salmón",
+   "est": "Otoño",
+   "lugar": "Río",
+   "clima": "Cualquiera",
+   "hora": "6am-7pm",
+   "dif": "Media",
+   "desc": "Sube el río en otoño. Clásico de la temporada.",
+   "uso": "Vender, cocina (Sushi), Lote."
+  },
+  {
+   "n": "Sábalo (Shad)",
+   "est": "Pri/Ver/Oto",
+   "lugar": "Río",
+   "clima": "Lluvia",
+   "hora": "9am-2am",
+   "dif": "Difícil",
+   "desc": "De río solo con lluvia. Movimiento mixto.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Lucio (Pike)",
+   "est": "Verano/Invierno",
+   "lugar": "Río / Lago",
+   "clima": "Cualquiera",
+   "hora": "Cualquiera",
+   "dif": "Difícil",
+   "desc": "Depredador rápido, cuesta atraparlo. Buen valor.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Carpa de madroño (Walleye)",
+   "est": "Otoño",
+   "lugar": "Río/Lago",
+   "clima": "Lluvia",
+   "hora": "12pm-2am",
+   "dif": "Media",
+   "desc": "Solo con lluvia en otoño (y a veces invierno).",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Calamar (Squid)",
+   "est": "Invierno",
+   "lugar": "Océano",
+   "clima": "Cualquiera",
+   "hora": "6pm-2am",
+   "dif": "Media",
+   "desc": "Nocturno de invierno. Movimiento de buceo. Aparece en el Lote de tinta.",
+   "uso": "Vender, cocina (Calamari), Lote."
+  },
+  {
+   "n": "Atún blanco (Albacore)",
+   "est": "Otoño/Invierno",
+   "lugar": "Océano",
+   "clima": "Cualquiera",
+   "hora": "6-11am / 6pm-2am",
+   "dif": "Media",
+   "desc": "De mar en horarios partidos. Buen valor.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Pejerrey/Fletán (Halibut)",
+   "est": "Pri/Ver/Inv",
+   "lugar": "Océano",
+   "clima": "Cualquiera",
+   "hora": "6-11am / 7pm-2am",
+   "dif": "Fácil",
+   "desc": "De mar, plano, movimiento suave. Fácil.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Pepino de mar (Sea Cucumber)",
+   "est": "Otoño/Invierno",
+   "lugar": "Océano",
+   "clima": "Cualquiera",
+   "hora": "6am-7pm",
+   "dif": "Media",
+   "desc": "De mar, de día en frío. Movimiento de buceo.",
+   "uso": "Vender, cocina."
+  },
+  {
+   "n": "Pez piedra (Stonefish)",
+   "est": "Todas",
+   "lugar": "Minas (nivel 20)",
+   "clima": "-",
+   "hora": "Cualquiera",
+   "dif": "Difícil",
+   "desc": "Solo en el nivel 20 de la mina, en lago de agua. Necesario para el Lote del especialista en pesca.",
+   "uso": "Lote de pesca, vender, cocina."
+  },
+  {
+   "n": "Carpa cavernícola (Ice Pip)",
+   "est": "Todas",
+   "lugar": "Minas (nivel 60)",
+   "clima": "-",
+   "hora": "Cualquiera",
+   "dif": "Difícil",
+   "desc": "En el nivel 60 de la mina. Muy esquivo (salta mucho).",
+   "uso": "Lote de pesca, vender."
+  },
+  {
+   "n": "Anguila de lava (Lava Eel)",
+   "est": "Todas",
+   "lugar": "Minas (nivel 100)",
+   "clima": "-",
+   "hora": "Cualquiera",
+   "dif": "Muy difícil",
+   "desc": "En el lago de lava del nivel 100. De los más valiosos y difíciles. Estanque da iridio/diamantes.",
+   "uso": "Estanque (oro), vender por mucho, cocina."
+  },
+  {
+   "n": "Carpa escorpión (Scorpion Carp)",
+   "est": "Todas",
+   "lugar": "Desierto",
+   "clima": "-",
+   "hora": "6am-8pm",
+   "dif": "Muy difícil",
+   "desc": "Del río del desierto, de día. Requiere nivel 4 de pesca para enganchar.",
+   "uso": "Lote, vender, cocina."
+  },
+  {
+   "n": "Leyenda (Legend)",
+   "est": "Primavera",
+   "lugar": "Lago de la montaña",
+   "clima": "Lluvia",
+   "hora": "6am-2am",
+   "dif": "Extrema",
+   "desc": "El legendario más famoso. Único por partida. Necesita nivel 10 de pesca, buen cebo/señuelo y comida de pesca.",
+   "uso": "Logro, vender por una fortuna, estanque especial."
+  },
+  {
+   "n": "Pez carmesí (Crimsonfish)",
+   "est": "Verano",
+   "lugar": "Océano (este, muelle)",
+   "clima": "Cualquiera",
+   "hora": "Cualquiera",
+   "dif": "Extrema",
+   "desc": "Legendario de verano en el extremo este del muelle. Único por partida.",
+   "uso": "Logro, vender, colección."
+  },
+  {
+   "n": "Pez glacial (Glacierfish)",
+   "est": "Invierno",
+   "lugar": "Bosque Tizón (sur)",
+   "clima": "Cualquiera",
+   "hora": "Cualquiera",
+   "dif": "Extrema",
+   "desc": "Legendario de invierno en la punta sur del río del bosque.",
+   "uso": "Logro, vender, colección."
+  },
+  {
+   "n": "Angler",
+   "est": "Otoño",
+   "lugar": "Norte del pueblo (puente)",
+   "clima": "Cualquiera",
+   "hora": "Cualquiera",
+   "dif": "Extrema",
+   "desc": "Legendario de otoño cerca del puente al norte de la herrería.",
+   "uso": "Logro, vender, colección."
+  },
+  {
+   "n": "Carpa mutante",
+   "est": "Todas",
+   "lugar": "Cloacas",
+   "clima": "Cualquiera",
+   "hora": "Cualquiera",
+   "dif": "Extrema",
+   "desc": "Legendario de las cloacas (tras conseguir la Llave Oxidada). Sin restricción de estación.",
+   "uso": "Logro, vender, colección."
+  },
+  {
+   "n": "Cangrejo / Olla de cangrejo",
+   "est": "Todas",
+   "lugar": "Trampas (océano/río/lago)",
+   "clima": "Cualquiera",
+   "hora": "Pasivo",
+   "dif": "Trampa",
+   "desc": "No se pescan con caña: se atrapan con Ollas de Cangrejo. Mariscos varios (cangrejo, langosta, mejillón, percebe, etc).",
+   "uso": "Vender mariscos, Lote del cangrejero, cebo (con prensa de carnada)."
+  }
+ ],
+ "aldeanos": [
+  {
+   "n": "Abigail",
+   "solt": true,
+   "cumple": "Otoño 13",
+   "ama": [
+    "Amatista",
+    "Calabaza (Pumpkin)",
+    "Chocolate caliente",
+    "Cuarzo",
+    "Esquirla prismática",
+    "Espíritu de Banana"
+   ],
+   "odia": [
+    "Comida de campo (Wild Horseradish)",
+    "Acebo (Holly)"
+   ],
+   "desc": "Hija de Pierre y Caroline. Aventurera, le gusta la mina, lo arcano y los videojuegos. Soltera, casable.",
+   "uso": "Regalá Amatista o Cuarzo (baratos de la mina). Ruta romántica disponible."
+  },
+  {
+   "n": "Penny",
+   "solt": true,
+   "cumple": "Otoño 2",
+   "ama": [
+    "Diamante",
+    "Ramo de amapolas (Poppy)",
+    "Sopa de cangrejo",
+    "Maple Bar",
+    "Ensalada de tacos",
+    "Melón"
+   ],
+   "odia": [
+    "Cerveza",
+    "Vino",
+    "Pez (la mayoría)",
+    "Conejo (pie)"
+   ],
+   "desc": "Maestra de los niños del pueblo, tímida y amable. Vive en la casa rodante con Pam. Soltera, casable.",
+   "uso": "Regalá Diamantes y platos cocinados. Detesta el alcohol (ojo con Pam)."
+  },
+  {
+   "n": "Leah",
+   "solt": true,
+   "cumple": "Invierno 23",
+   "ama": [
+    "Ensalada",
+    "Vino de fruta",
+    "Trufa",
+    "Estofado de verduras",
+    "Queso de cabra",
+    "Vino de cualquier fruta"
+   ],
+   "odia": [
+    "Comida rápida",
+    "Pan"
+   ],
+   "desc": "Artista escultora que vive en la cabaña del bosque. Le gustan los productos artesanales. Soltera, casable.",
+   "uso": "Regalá Vino o Trufas; ama lo artesanal de la granja."
+  },
+  {
+   "n": "Maru",
+   "solt": true,
+   "cumple": "Verano 10",
+   "ama": [
+    "Batería (Battery Pack)",
+    "Diamante",
+    "Coliflor",
+    "Pizza de queso de cabra",
+    "Aguamarina",
+    "Esquirla prismática"
+   ],
+   "odia": [
+    "Comida de campo",
+    "Pickles"
+   ],
+   "desc": "Inventora e ingeniera, ayuda en la clínica. Hija de Robin y Demetrius. Soltera, casable.",
+   "uso": "Regalá Baterías (de pararrayos) o gemas. Le gusta la tecnología."
+  },
+  {
+   "n": "Haley",
+   "solt": true,
+   "cumple": "Primavera 14",
+   "ama": [
+    "Girasol",
+    "Coco",
+    "Ensalada de frutas",
+    "Pastel rosa (Pink Cake)",
+    "Perla"
+   ],
+   "odia": [
+    "Pez (todos)",
+    "Cosas de la mina",
+    "Babosa"
+   ],
+   "desc": "Le interesa la fotografía. Empieza superficial pero su historia evoluciona mucho. Soltera, casable.",
+   "uso": "Regalá Girasoles y Coco. Odia el pescado: nunca le des peces."
+  },
+  {
+   "n": "Emily",
+   "solt": true,
+   "cumple": "Primavera 27",
+   "ama": [
+    "Amatista",
+    "Aguamarina",
+    "Rubí",
+    "Tela (Cloth)",
+    "Topacio",
+    "Jade"
+   ],
+   "odia": [
+    "Pez (la mayoría)",
+    "Cerveza (no tanto)"
+   ],
+   "desc": "Espiritual y creativa, trabaja en el bar (Stardrop Saloon). Le encantan las gemas y la tela. Soltera, casable.",
+   "uso": "Regalá gemas variadas o Tela (de lana en telar). Fácil de contentar con minería."
+  },
+  {
+   "n": "Sebastian",
+   "solt": true,
+   "cumple": "Invierno 10",
+   "ama": [
+    "Sashimi",
+    "Erizo de mar (Sea Urchin)",
+    "Obsidiana",
+    "Pizza de queso (fría)",
+    "Calamar",
+    "Frozen Tear"
+   ],
+   "odia": [
+    "Completos/dulces (varios)",
+    "Pimiento picante"
+   ],
+   "desc": "Programador freelance y motoquero solitario. Vive en el sótano del taller de Robin. Soltero, casable.",
+   "uso": "Regalá Obsidiana (mina/lava) o Sashimi. Lo encontrás de noche junto al lago."
+  },
+  {
+   "n": "Sam",
+   "solt": true,
+   "cumple": "Verano 17",
+   "ama": [
+    "Pizza",
+    "Cactus Fruit",
+    "Tigre Maki",
+    "Maple Bar"
+   ],
+   "odia": [
+    "Comida de campo",
+    "Pickles",
+    "Joja Cola"
+   ],
+   "desc": "Músico joven y skater, trabaja en JojaMart. Hermano de Vincent. Soltero, casable.",
+   "uso": "Regalá Pizza o Maple Bar (fáciles de cocinar)."
+  },
+  {
+   "n": "Shane",
+   "solt": true,
+   "cumple": "Primavera 20",
+   "ama": [
+    "Pizza de pepperoni",
+    "Cerveza",
+    "Pimiento picante",
+    "Hot Pepper",
+    "Nuggets de pollo"
+   ],
+   "odia": [
+    "Cuarzo",
+    "Pickles"
+   ],
+   "desc": "Trabaja en JojaMart, atraviesa una etapa muy dura. Historia con desarrollo profundo y sensible. Soltero, casable.",
+   "uso": "Regalá Cerveza o Pizza. Cuida gallinas azules; su cadena de corazones es de las mejores."
+  },
+  {
+   "n": "Alex",
+   "solt": true,
+   "cumple": "Verano 13",
+   "ama": [
+    "Desayuno completo (Complete Breakfast)",
+    "Salmón ahumado"
+   ],
+   "odia": [
+    "Acebo (Holly)",
+    "Cuarzo"
+   ],
+   "desc": "Deportista que sueña con ser jugador profesional de 'gridball'. Vive con sus abuelos George y Evelyn. Soltero, casable.",
+   "uso": "Regalá Desayuno completo o Salmón ahumado. Difícil de leer al principio."
+  },
+  {
+   "n": "Elliott",
+   "solt": true,
+   "cumple": "Otoño 5",
+   "ama": [
+    "Langosta (Lobster)",
+    "Pato pudding",
+    "Vino de moras",
+    "Granada (Pomegranate)",
+    "Tom Kha",
+    "Crab Cakes"
+   ],
+   "odia": [
+    "Salmón simple"
+   ],
+   "desc": "Escritor refinado y dramático que vive en la cabaña junto al mar. Soltero, casable.",
+   "uso": "Regalá Langosta (olla de cangrejo) o Vino. Le gusta lo elegante."
+  },
+  {
+   "n": "Harvey",
+   "solt": true,
+   "cumple": "Invierno 14",
+   "ama": [
+    "Café",
+    "Pickles",
+    "Tarta de leche de cabra (Wine)",
+    "Super Meal",
+    "Truffle Oil"
+   ],
+   "odia": [
+    "Pizza (no tanto)",
+    "Coral"
+   ],
+   "desc": "Médico del pueblo, responsable y algo tímido. Atiende la clínica. Soltero, casable.",
+   "uso": "Regalá Café o Pickles. Te recuerda chequeos de salud."
+  },
+  {
+   "n": "Lewis",
+   "solt": false,
+   "cumple": "Primavera 7",
+   "ama": [
+    "Ñame caramelizado (Glazed Yams)",
+    "Coliflor caliente (Hot Pepper no)",
+    "Mezcla de vegetales (Vegetable Medley)",
+    "Autumn's Bounty",
+    "Cuarzo de fuego"
+   ],
+   "odia": [
+    "Acebo (Holly)"
+   ],
+   "desc": "Alcalde de Pueblo Pelícano. Organiza festivales. Tiene una relación secreta con Marnie.",
+   "uso": "Regalá platos de vegetales. Te da misiones del tablón."
+  },
+  {
+   "n": "Marnie",
+   "solt": false,
+   "cumple": "Otoño 18",
+   "ama": [
+    "Diamante",
+    "Pumpkin Pie",
+    "Farmer's Lunch"
+   ],
+   "odia": [
+    "Comida de campo"
+   ],
+   "desc": "Dueña del rancho de animales. A ella le comprás ganado, mascotas e incubadoras.",
+   "uso": "Regalá Diamantes. Subir corazones a veces ayuda con precios/diálogos."
+  },
+  {
+   "n": "Pam",
+   "solt": false,
+   "cumple": "Primavera 18",
+   "ama": [
+    "Cerveza",
+    "Pale Ale",
+    "Mango",
+    "Sopa de chirivía (Parsnip Soup)",
+    "Glazed Yams"
+   ],
+   "odia": [
+    "Cuarzo"
+   ],
+   "desc": "Conductora del bus (cuando se repara). Madre de Penny. Le gusta el alcohol.",
+   "uso": "Regalá Cerveza/Pale Ale. Reparar el bus desbloquea el Desierto Calico."
+  },
+  {
+   "n": "Linus",
+   "solt": false,
+   "cumple": "Invierno 3",
+   "ama": [
+    "Comida de campo (Wild Horseradish, etc.)",
+    "Coco",
+    "Ñame (Yam)",
+    "Plato del mar (Dish O' The Sea)",
+    "Cactus Fruit",
+    "Blueberry"
+   ],
+   "odia": [
+    "Talismán"
+   ],
+   "desc": "Vive en una carpa en la montaña, en armonía con la naturaleza. Muy buena persona, incomprendido.",
+   "uso": "Regalá comida de campo (gratis, recolectás). Su cadena de corazones es conmovedora."
+  },
+  {
+   "n": "Pierre",
+   "solt": false,
+   "cumple": "Primavera 26",
+   "ama": [
+    "Daffodil",
+    "Vino de fruta",
+    "Pizza no",
+    "Escargot"
+   ],
+   "odia": [
+    "Salmonberry"
+   ],
+   "desc": "Dueño de la tienda general. Le comprás semillas y mochila. Esposo de Caroline, padre de Abigail.",
+   "uso": "Regalá flores/vino. Su tienda es tu fuente principal de semillas."
+  },
+  {
+   "n": "Caroline",
+   "solt": false,
+   "cumple": "Invierno 7",
+   "ama": [
+    "Flores (varias)",
+    "Té verde (Green Tea)",
+    "Tropical Curry",
+    "Summer Spangle",
+    "Fish Taco"
+   ],
+   "odia": [
+    "Quartz"
+   ],
+   "desc": "Esposa de Pierre, madre de Abigail. Tiene un invernadero secreto detrás de su casa.",
+   "uso": "Regalá flores o Té verde."
+  },
+  {
+   "n": "Gus",
+   "solt": false,
+   "cumple": "Verano 8",
+   "ama": [
+    "Escargot",
+    "Sopa de pescado (Fish Taco)",
+    "Orange",
+    "Tropical Curry",
+    "Diamante"
+   ],
+   "odia": [
+    "Comida de campo"
+   ],
+   "desc": "Dueño y cocinero del Stardrop Saloon. Te vende comida y recetas. Buena gente.",
+   "uso": "Regalá platos elaborados o Diamante. Comprale recetas y comida útil."
+  },
+  {
+   "n": "Robin",
+   "solt": false,
+   "cumple": "Otoño 21",
+   "ama": [
+    "Goat Cheese",
+    "Spaghetti",
+    "Peach"
+   ],
+   "odia": [
+    "Holly"
+   ],
+   "desc": "Carpintera del pueblo. Construye y mejora todos los edificios de tu granja. Madre de Maru y Sebastian.",
+   "uso": "Regalá Spaghetti o Goat Cheese. Le encargás gallinero, establo, silo, etc."
+  },
+  {
+   "n": "Demetrius",
+   "solt": false,
+   "cumple": "Verano 28",
+   "ama": [
+    "Bean Hotpot",
+    "Ice Cream",
+    "Rice Pudding",
+    "Strawberry"
+   ],
+   "odia": [
+    "Quartz"
+   ],
+   "desc": "Científico, esposo de Robin. Investiga en el sótano. Padre de Maru.",
+   "uso": "Regalá helado o postres. Te pregunta si preferís la cueva de hongos o murciélagos."
+  },
+  {
+   "n": "Clint",
+   "solt": false,
+   "cumple": "Invierno 26",
+   "ama": [
+    "Topacio",
+    "Amatista",
+    "Aguamarina",
+    "Rubí",
+    "Jade",
+    "Esmeralda",
+    "Gold Bar",
+    "Fiddlehead Risotto"
+   ],
+   "odia": [
+    "Comida de campo"
+   ],
+   "desc": "Herrero del pueblo. Mejora herramientas, abre geodas y vende lingotes. Tímido, enamorado de Emily.",
+   "uso": "Regalá cualquier gema (le encantan casi todas). Imprescindible para mejorar herramientas."
+  },
+  {
+   "n": "Willy",
+   "solt": false,
+   "cumple": "Verano 24",
+   "ama": [
+    "Diamante",
+    "Pez globo (Pufferfish)",
+    "Trucha arcoíris",
+    "Sea Cucumber",
+    "Mead",
+    "Catfish",
+    "Octopus"
+   ],
+   "odia": [
+    "-"
+   ],
+   "desc": "Pescador dueño de la tienda de pesca en el muelle. Te vende cañas, cebo y anzuelos.",
+   "uso": "Regalá pescado de calidad o Diamante. Su cadena desbloquea Isla Jengibre."
+  },
+  {
+   "n": "Evelyn",
+   "solt": false,
+   "cumple": "Invierno 20",
+   "ama": [
+    "Diamante",
+    "Chocolate Cake",
+    "Beet",
+    "Fairy Rose",
+    "Stuffing",
+    "Tulip"
+   ],
+   "odia": [
+    "Pickles",
+    "Salmonberry"
+   ],
+   "desc": "Abuela de Alex, dulce y maternal. Cuida el jardín del pueblo. 'La Abuela'.",
+   "uso": "Regalá tortas o Fairy Rose. Te da una receta de cookies al subir corazones."
+  },
+  {
+   "n": "George",
+   "solt": false,
+   "cumple": "Otoño 24",
+   "ama": [
+    "Leek (Puerro silvestre)",
+    "Fried Mushroom"
+   ],
+   "odia": [
+    "La mayoría",
+    "Holly"
+   ],
+   "desc": "Abuelo de Alex, en silla de ruedas, gruñón pero con buen fondo. Esposo de Evelyn.",
+   "uso": "Regalá Puerro (recolección de primavera) o Fried Mushroom. Difícil de contentar."
+  },
+  {
+   "n": "Jodi",
+   "solt": false,
+   "cumple": "Otoño 11",
+   "ama": [
+    "Chocolate Cake",
+    "Crispy Bass",
+    "Diamond",
+    "Eggplant Parmesan",
+    "Fried Eel",
+    "Pancakes",
+    "Rhubarb Pie",
+    "Vegetable Medley"
+   ],
+   "odia": [
+    "Comida de campo"
+   ],
+   "desc": "Ama de casa, madre de Sam y Vincent. Su esposo Kent vuelve de la guerra en año 2.",
+   "uso": "Regalá platos cocinados o Diamante."
+  },
+  {
+   "n": "Vincent",
+   "solt": false,
+   "cumple": "Primavera 10",
+   "ama": [
+    "Cracker",
+    "Grape",
+    "Pink Cake",
+    "Snail",
+    "Ginger Ale"
+   ],
+   "odia": [
+    "La mayoría de gemas"
+   ],
+   "desc": "Niño, hijo menor de Jodi. Hermanito de Sam. Va a la escuela con Jas.",
+   "uso": "Regalá Uva o dulces. Es un nene: cuidado con lo que le das."
+  },
+  {
+   "n": "Jas",
+   "solt": false,
+   "cumple": "Verano 4",
+   "ama": [
+    "Fairy Rose",
+    "Pink Cake",
+    "Plum Pudding",
+    "Ancient Doll"
+   ],
+   "odia": [
+    "La mayoría"
+   ],
+   "desc": "Niña, sobrina de Marnie, ahijada de Shane. Va a la escuela con Vincent.",
+   "uso": "Regalá Fairy Rose o dulces."
+  },
+  {
+   "n": "Kent",
+   "solt": false,
+   "cumple": "Primavera 4",
+   "ama": [
+    "Fiddlehead Risotto",
+    "Roasted Hazelnuts",
+    "Daffodil"
+   ],
+   "odia": [
+    "Seaweed",
+    "Algae"
+   ],
+   "desc": "Esposo de Jodi, soldado que regresa en el año 2. Sufre estrés post-combate.",
+   "uso": "Regalá platos o avellanas. Aparece desde el año 2."
+  },
+  {
+   "n": "Sandy",
+   "solt": false,
+   "cumple": "Otoño 7",
+   "ama": [
+    "Daffodil",
+    "Crocus",
+    "Mango",
+    "Sweet Pea"
+   ],
+   "odia": [
+    "-"
+   ],
+   "desc": "Encargada del Oasis en el desierto. Vende semillas exóticas (carambola, etc). Amiga de Emily.",
+   "uso": "Regalá flores. Accesible tras reparar el bus."
+  },
+  {
+   "n": "Krobus",
+   "solt": false,
+   "cumple": "Invierno 1",
+   "ama": [
+    "Diamante",
+    "Iridium Bar",
+    "Pumpkin",
+    "Void Egg",
+    "Void Mayonnaise",
+    "Wild Horseradish"
+   ],
+   "odia": [
+    "Holy water no, Slime"
+   ],
+   "desc": "Monstruo amistoso de las sombras que vive en las cloacas. Te vende objetos raros. Puede ser compañero de cuarto (no matrimonio).",
+   "uso": "Regalá Huevo del vacío o Diamante. Comprale el Caracol de invierno y rarezas."
+  },
+  {
+   "n": "Dwarf (Enano)",
+   "solt": false,
+   "cumple": "Verano 22",
+   "ama": [
+    "Todas las gemas (Amatista, Rubí, etc.)",
+    "Omni Geode",
+    "Lemon Stone",
+    "Geodas"
+   ],
+   "odia": [
+    "Holly"
+   ],
+   "desc": "Comerciante enano en la mina. Necesitás el Traductor Enano (4 piedras enanas) para entenderlo.",
+   "uso": "Regalá gemas y geodas. Te vende bombas y objetos raros."
+  },
+  {
+   "n": "Wizard (Mago)",
+   "solt": false,
+   "cumple": "Invierno 17",
+   "ama": [
+    "Solar Essence",
+    "Void Essence",
+    "Esquirla prismática",
+    "Súper pepino no",
+    "Todos los minerales de geoda",
+    "Purple Mushroom"
+   ],
+   "odia": [
+    "-"
+   ],
+   "desc": "Mago misterioso de la torre. Te ofrece el Altar Mágico, edificios mágicos y tareas arcanas.",
+   "uso": "Regalá esencias o minerales de geoda. Desbloquea magia y la cueva de Jengibre."
+  }
+ ],
+ "recursos": [
+  {
+   "n": "Cobre (Mena)",
+   "lugar": "Mina niveles 1-39",
+   "herr": "Pico",
+   "desc": "Mineral básico. 5 menas + 1 carbón en el Horno = 1 Lingote de cobre.",
+   "uso": "Mejorar herramientas a nivel 1, maquinaria básica (recolector, vasija de abejas, faroles)."
+  },
+  {
+   "n": "Hierro (Mena)",
+   "lugar": "Mina niveles 40-79",
+   "herr": "Pico",
+   "desc": "Mineral intermedio. 5 menas + 1 carbón = 1 Lingote de hierro.",
+   "uso": "Mejoras a nivel 2, MUCHAS máquinas (mayonesera, prensa de quesos, recolector pesado), Lote del herrero."
+  },
+  {
+   "n": "Oro (Mena)",
+   "lugar": "Mina niveles 80-120",
+   "herr": "Pico",
+   "desc": "Mineral avanzado. 5 menas + 1 carbón = 1 Lingote de oro.",
+   "uso": "Mejoras a nivel 3, máquinas de calidad (tonel, sembradora), Lote del herrero, anillos."
+  },
+  {
+   "n": "Iridio (Mena)",
+   "lugar": "Caverna Calavera / nivel 120+ / Lava nivel 100",
+   "herr": "Pico (oro+)",
+   "desc": "El mineral más valioso. 5 menas + 1 carbón en Horno = 1 Lingote de iridio.",
+   "uso": "Mejoras MÁXIMAS de herramientas, Aspersores de iridio (4x4), máquinas top, Anillo de iridio."
+  },
+  {
+   "n": "Carbón (Coal)",
+   "lugar": "Mina / nodos / Horno de carbón",
+   "herr": "Pico",
+   "desc": "Combustible esencial. Sale de rocas oscuras, del Horno de carbón (10 madera) o de Carbonífero (slime).",
+   "uso": "Fundir todos los minerales, fabricar bombas, acero, antorchas. Lo vas a necesitar EN CANTIDAD."
+  },
+  {
+   "n": "Piedra (Stone)",
+   "lugar": "Granja, mina, cantera",
+   "herr": "Pico",
+   "desc": "El material de construcción más común.",
+   "uso": "Caminos, cercas, edificios, hornos, sileros, calidad de suelo."
+  },
+  {
+   "n": "Madera (Wood)",
+   "lugar": "Talar árboles y palos",
+   "herr": "Hacha",
+   "desc": "Material base de construcción. De árboles, tocones y palos del suelo.",
+   "uso": "Casi todo el crafteo inicial y construcciones con Robin."
+  },
+  {
+   "n": "Fibra (Fiber)",
+   "lugar": "Cortar maleza/pasto",
+   "herr": "Guadaña",
+   "desc": "De cortar maleza y hierba. También de la planta Fibra vegetal.",
+   "uso": "Cuerda, redes, enrejados, Suelo de calidad, semillas silvestres."
+  },
+  {
+   "n": "Cuarzo refinado (Refined Quartz)",
+   "lugar": "Horno (Cuarzo o Cuarzo de fuego)",
+   "herr": "-",
+   "desc": "Cuarzo procesado en el horno. Reemplaza a veces al oro en recetas.",
+   "uso": "Recetas de maquinaria avanzada, lámparas, baterías, Lote del herrero."
+  },
+  {
+   "n": "Amatista",
+   "lugar": "Nodos de gema / slimes verdes / geodas",
+   "herr": "Pico",
+   "desc": "Gema morada común. Vale ~100g.",
+   "uso": "Regalo (Abigail, Clint, Emily, Dwarf), museo, máquina de coser, anillos."
+  },
+  {
+   "n": "Topacio",
+   "lugar": "Nodos / cofres / geodas",
+   "herr": "Pico",
+   "desc": "Gema naranja barata (~80g).",
+   "uso": "Regalo (Clint, Emily, Dwarf), museo, forja."
+  },
+  {
+   "n": "Aguamarina",
+   "lugar": "Nodos / geodas",
+   "herr": "Pico",
+   "desc": "Gema celeste (~180g).",
+   "uso": "Regalo (Emily, Maru, Clint), museo, forja."
+  },
+  {
+   "n": "Rubí",
+   "lugar": "Nodos de rubí / geodas",
+   "herr": "Pico",
+   "desc": "Gema roja (~250g).",
+   "uso": "Regalo (Emily, Clint, Dwarf), museo, Anillo de rubí (+10% daño)."
+  },
+  {
+   "n": "Esmeralda",
+   "lugar": "Nodos de esmeralda",
+   "herr": "Pico",
+   "desc": "Gema verde (~250g).",
+   "uso": "Regalo (Clint, Dwarf), museo, Anillo de esmeralda (+velocidad)."
+  },
+  {
+   "n": "Jade",
+   "lugar": "Nodos / geodas",
+   "herr": "Pico",
+   "desc": "Gema verde pálido (~200g). Se cambia por Staircases con el comerciante del desierto los domingos.",
+   "uso": "Regalo (Emily, Clint, Dwarf), museo, forja, trueque desierto."
+  },
+  {
+   "n": "Diamante",
+   "lugar": "Nodos de diamante / geodas / nivel 50+",
+   "herr": "Pico",
+   "desc": "Gema valiosa (~750g). En el Cristalizador se duplica solo.",
+   "uso": "Regalo TOP (Penny, Maru, Marnie, Willy, Clint...), Anillo de Yoba, forja. Cristalizá para dinero pasivo."
+  },
+  {
+   "n": "Esquirla prismática (Prismatic Shard)",
+   "lugar": "Caverna Calavera / monstruos sombra / piedras místicas",
+   "herr": "Pico/Bomba",
+   "desc": "Ítem rarísimo y multicolor (~2000g). El más valioso de las gemas.",
+   "uso": "Espada Galaxy (en el desierto), regalo universal amado (excepto Haley), encantar herramientas, museo."
+  },
+  {
+   "n": "Cuarzo (Quartz)",
+   "lugar": "Minas (muy común)",
+   "herr": "Pico",
+   "desc": "Mineral translúcido abundante. Se refina a Cuarzo refinado.",
+   "uso": "Cuarzo refinado, museo, regalo (Abigail). NO regalar a la mayoría (lo odian)."
+  },
+  {
+   "n": "Obsidiana",
+   "lugar": "Geodas de magma / Omnigeoda / lava",
+   "herr": "Clint/Prensa",
+   "desc": "Vidrio volcánico negro (~200g). De geodas de magma.",
+   "uso": "Regalo (Sebastian la ama), Anillo de tinta de calamar, recetas explosivas, museo."
+  },
+  {
+   "n": "Esquirla de estrella (Star Shard)",
+   "lugar": "Omnigeoda / Geoda de magma",
+   "herr": "Clint/Prensa",
+   "desc": "Mineral brillante valioso (~500g).",
+   "uso": "Vender, museo."
+  },
+  {
+   "n": "Geoda",
+   "lugar": "Romper rocas en la mina",
+   "herr": "Clint / Prensa de geodas",
+   "desc": "Roca que contiene un mineral adentro. Clint la abre por 25g, o usás tu Prensa (1 carbón).",
+   "uso": "Conseguir minerales para el museo y recetas. La Omnigeoda puede dar cualquier mineral."
+  }
+ ],
+ "artesania": [
+  {
+   "n": "Tonel / Barrica (Keg)",
+   "lugar": "Crafteo (nivel 8 Agricultura)",
+   "mat": "30 Madera, 1 Cobre, 1 Hierro, 1 Roble",
+   "desc": "Convierte fruta en Vino, verdura en Jugo, lúpulo en Pale Ale, trigo en Cerveza, miel en Aguamiel. El Vino vale x3 la fruta y se puede añejar en bodega.",
+   "uso": "LA máquina del dinero. Fruta → Vino. Ancient Fruit/Carambola/Uva en tonel = economía resuelta."
+  },
+  {
+   "n": "Tarro de conservas (Preserves Jar)",
+   "lugar": "Crafteo (nivel 4 Agricultura)",
+   "mat": "50 Madera, 40 Piedra, 8 Carbón",
+   "desc": "Hace Mermelada de fruta y Encurtido de verdura. Más rápido que el tonel pero menos valor que el vino.",
+   "uso": "Procesar cosecha rápido. Berenjena/calabaza → encurtido. Buena alternativa al tonel."
+  },
+  {
+   "n": "Aspersor (Sprinkler)",
+   "lugar": "Crafteo (nivel 2 Agricultura)",
+   "mat": "1 Cobre, 1 Hierro",
+   "desc": "Riega automáticamente. Básico riega 4 casillas; Calidad (nivel 6) 8 casillas; Iridio (nivel 9) 24 casillas (4x4).",
+   "uso": "Dejá de regar a mano. Prioridad #1 para escalar la granja. El de Iridio es transformador."
+  },
+  {
+   "n": "Recolector (Mayonesera/Prensa de queso)",
+   "lugar": "Crafteo",
+   "mat": "Varía (madera, cobre/hierro)",
+   "desc": "La Mayonesera convierte huevos en Mayonesa; la Prensa de queso convierte leche en Queso. Suben mucho el valor del producto animal.",
+   "uso": "Nunca vendas huevos/leche crudos: procesalos. Queso y Mayonesa de calidad = buen ingreso."
+  },
+  {
+   "n": "Horno (Furnace)",
+   "lugar": "Crafteo (lo da Clint)",
+   "mat": "25 Piedra, 20 Cobre",
+   "desc": "Funde menas en lingotes (5 mena + 1 carbón). Imprescindible para minería.",
+   "uso": "Hacer lingotes para mejorar herramientas y maquinaria. Hacé varios para fundir en paralelo."
+  },
+  {
+   "n": "Olla de cangrejo (Crab Pot)",
+   "lugar": "Crafteo (nivel 3 Pesca)",
+   "mat": "40 Madera, 3 Hierro",
+   "desc": "Atrapa mariscos y peces de trampa pasivamente en cualquier agua. Necesita cebo (o profesión Trampero, que lo hace gratis).",
+   "uso": "Pesca pasiva, Lote del cangrejero, cebo de la prensa de carnada. Llená el río de ollas."
+  },
+  {
+   "n": "Silo (Silo)",
+   "lugar": "Construcción (Robin)",
+   "mat": "100 Piedra, 10 Arcilla, 5 Cobre, 250g",
+   "desc": "Almacena heno de cortar pasto con la guadaña, para alimentar animales en invierno.",
+   "uso": "Construilo ANTES del gallinero/establo. Sin silo, el pasto cortado se pierde."
+  },
+  {
+   "n": "Sembradora de semillas (Seed Maker)",
+   "lugar": "Crafteo (nivel 9 Agricultura)",
+   "mat": "25 Madera, 10 Oro, 10 Fibra",
+   "desc": "Convierte 1 cultivo en 1-3 semillas de ese cultivo (a veces semillas mixtas).",
+   "uso": "Reproducí Ancient Fruit y otros cultivos caros para llenar el invernadero sin recomprar."
+  },
+  {
+   "n": "Cristalizador (Crystalarium)",
+   "lugar": "Crafteo (nivel 9 Minería)",
+   "mat": "99 Piedra, 5 Oro, 2 Iridio, 1 Batería",
+   "desc": "Duplica una gema o mineral indefinidamente (tarda según el tipo). Con Diamante = dinero pasivo fuerte.",
+   "uso": "Poné un Diamante adentro y cosechá copias para siempre. Granja de diamantes = oro infinito."
+  },
+  {
+   "n": "Pararrayos (Lightning Rod)",
+   "lugar": "Crafteo (nivel 6 Pesca... no, Forrajeo)",
+   "mat": "1 Hierro, 1 Cuarzo refinado, 5 Murciélago",
+   "desc": "En tormentas, atrae rayos y genera Batería (Battery Pack), necesaria para muchas máquinas.",
+   "uso": "Fuente de Baterías para Cristalizador, aspersores de iridio, etc. Poné varios."
+  }
+ ],
+ "guias": [
+  {
+   "est": "🌱 Mecánicas básicas",
+   "desc": "Lo esencial que conviene saber sí o sí desde el día 1.",
+   "pasos": [
+    "Energía y salud: cada acción gasta energía. Comé algo o dormí antes de quedar en cero (si llegás a 0 te desmayás y perdés oro/items).",
+    "Dormí antes de las 2am. A las 2am te desmayás. Acostate alrededor de medianoche-1am.",
+    "Regalos: 2 por aldeano por semana (la semana arranca el domingo) + siempre uno en su cumpleaños (cuenta x8). Hablales todos los días.",
+    "Calidad: cultivos y peces tienen calidad normal/plata/oro/iridio. La de oro vale 1.25x y la de iridio 1.5x. El fertilizante mejora la chance de calidad.",
+    "Centro Comunitario: completá los Lotes (Bundles) entregando ítems. Cada sala desbloquea una recompensa clave (puente, invernadero, minecarts, etc).",
+    "Herramientas: mejoralas con Clint (necesita menas + oro y tarda 2 días). El Riego y el Pico mejorados son prioridad."
+   ]
+  },
+  {
+   "est": "Primavera (Año 1)",
+   "desc": "Tu primera estación. Foco: plantar cultivos rápidos, juntar plata y empezar relaciones.",
+   "pasos": [
+    "Día 1-2: Limpiá un área (madera, piedra, maleza) y plantá las 15 Chirivías iniciales. Regá todos los días.",
+    "Hablá con TODOS los aldeanos para destrabar el dar regalos. Anotá cumpleaños.",
+    "Reinvertí en Patatas y Coliflor (rinden bien). Plantá unas Judías verdes (repiten, necesitan enrejado).",
+    "Día 13: Festival del Huevo. Comprá todas las Fresas que puedas y plantalas (repiten cada 4 días).",
+    "Los días de LLUVIA no regás: aprovechá para bajar en la mina (buscá cobre) y pescar.",
+    "Empezá a juntar ítems para los Lotes de Primavera del Centro Comunitario.",
+    "Meta de plata: ahorrá para un Silo (antes que animales) y empezar a mejorar la Regadera."
+   ]
+  },
+  {
+   "est": "Verano (Año 1)",
+   "desc": "La estación más rentable para cultivos. Foco: repetibles, aspersores y mina.",
+   "pasos": [
+    "Plantá Arándanos (rentabilidad altísima por volumen) y unos Melones para el Lote de Calidad (oro).",
+    "Conseguí Aspersores: necesitás cobre y hierro de la mina. Dejan de obligarte a regar a mano.",
+    "Tomate y Pimiento picante repiten y dan ingreso constante.",
+    "Bajá en la mina hasta nivel 40+ para Hierro. Llevá comida y un arma.",
+    "Pesca: la Trucha arcoíris solo sale en verano soleado de día.",
+    "Día 28: Festival de las Medusas Luna (Luau el 11 también). No te los pierdas.",
+    "Empezá a hacer Tarros de conserva o un Tonel con la fruta sobrante."
+   ]
+  },
+  {
+   "est": "Otoño (Año 1)",
+   "desc": "Última estación de cultivo al aire libre del año. Foco: Calabaza, vino y cerrar el Centro.",
+   "pasos": [
+    "Plantá Calabazas (top valor, gigante posible) y Uvas/Berenjenas/Grosellas (repiten).",
+    "Si plantaste Maíz en verano, sigue dando en otoño sin replantar.",
+    "Empezá a hacer Vino en Toneles (uva/frutas): se vende mucho más caro, ideal para tener ingreso en invierno.",
+    "Salmón sube el río: pez de la temporada. Bagre con lluvia.",
+    "Completá los Lotes de Otoño del Centro antes de que termine la estación.",
+    "Truco de transición: plantá Trigo a fin de mes para conservar la tierra labrada y el fertilizante al pasar a invierno.",
+    "Preparate para el invierno: stockeá comida, madera y heno (el pasto deja de crecer)."
+   ]
+  },
+  {
+   "est": "Invierno (Año 1)",
+   "desc": "No crece nada afuera (salvo Melón de polvo). Foco: mina, pesca, relaciones y planificar.",
+   "pasos": [
+    "Bajá fuerte en la mina y la Caverna Calavera: tenés todo el día libre sin regar.",
+    "Pescá especies de invierno (Calamar, Atún blanco, Arenque, Pejerrey). Mercado Nocturno días 15-17.",
+    "Subí corazones: con tiempo libre, es la mejor época para regalar y avanzar romances.",
+    "Si ya tenés el Invernadero (recompensa del Centro), llenalo de Ancient Fruit o cultivos de alto valor (crecen todo el año).",
+    "Construí/mejorá edificios con Robin (gallinero, establo, cobertizo) ahora que no cultivás.",
+    "Día 8 (Festival del Hielo) y 25 (Fiesta de la Estrella de Invierno, con intercambio de regalos secreto).",
+    "Planificá el Año 2: guardá semillas de Fresa, conseguí Ancient Fruit, comprá Carambola en el Oasis."
+   ]
+  },
+  {
+   "est": "🎯 Después del Año 1",
+   "desc": "Cómo seguir progresando una vez asentado.",
+   "pasos": [
+    "Invernadero lleno de Ancient Fruit en Tonel = ingreso enorme y estable todo el año.",
+    "Aspersores de Iridio + granja grande: automatizá el riego para escalar sin esfuerzo manual.",
+    "Caverna Calavera (desierto): bajá con bombas y escaleras para farmear Iridio. Llevá comida y café (velocidad).",
+    "Completá el Museo (donando minerales y artefactos a Gunther): a los 60 ítems conseguís la Llave Oxidada (cloacas → Krobus).",
+    "Conseguí los Stardrops (suben energía máxima): hay varios escondidos (cloacas, feria, pescar, etc).",
+    "Isla Jengibre: completá la cadena de Willy para desbloquear el barco. Nueva zona enorme con Qi, nueces doradas y contenido endgame.",
+    "Casate y tené hijos si querés, completá los corazones de todos, y apuntá al Espíritu de la Cosecha (evaluación final del abuelo)."
+   ]
+  }
+ ],
+ "cocina": [
+  {
+   "n": "Desayuno completo (Complete Breakfast)",
+   "ing": "Huevo frito, Leche, Hash browns, Pan",
+   "efecto": "+200 energía, +90 salud, Agricultura +2, Energía máx +50",
+   "como": "La Reina de la Salsa (TV). El mejor buff de agricultura del juego temprano.",
+   "uso": "Comer antes de un día de cosecha grande. Lo ama Alex."
+  },
+  {
+   "n": "Ensalada de frutas (Fruit Salad)",
+   "ing": "Melón, Arándano, Albaricoque",
+   "efecto": "+263 energía, +118 salud",
+   "como": "La Reina de la Salsa (TV). La comida con MÁS energía del juego.",
+   "uso": "Restaurar energía al máximo. Ideal para días largos de minería/pesca."
+  },
+  {
+   "n": "Budín de espuma de mar (Seafoam Pudding)",
+   "ing": "Pez globo, Calamar, Acero refinado... (Flounder, Midnight Squid, Squid Ink)",
+   "efecto": "Pesca +4",
+   "como": "La Reina de la Salsa (TV, año 2).",
+   "uso": "El mayor buff de pesca. Imprescindible para legendarios."
+  },
+  {
+   "n": "Café (Coffee)",
+   "ing": "5 Granos de café (en barril) o comprar en Saloon",
+   "efecto": "+1 velocidad (~1min)",
+   "como": "Gus lo vende; o barril con 5 granos.",
+   "uso": "Moverte más rápido. Acumulable con otras comidas de velocidad. Útil en Caverna Calavera."
+  },
+  {
+   "n": "Tortilla de calabaza (Pumpkin Soup)",
+   "ing": "Calabaza, Leche",
+   "efecto": "+50 def, +50 suerte, +110 energía",
+   "como": "Regalo de Robin (corazones) o La Reina de la Salsa.",
+   "uso": "Buff de suerte+defensa. Lo aman Sebastian y otros."
+  },
+  {
+   "n": "Aceite de trufa (no es plato pero clave)",
+   "ing": "1 Trufa en Aceitera",
+   "efecto": "Producto artesanal de alto valor",
+   "como": "Aceitera (crafteo). La trufa la cavan los cerdos.",
+   "uso": "Vender (~1065g con Artesano), Lote del chef, regalo (Leah)."
+  },
+  {
+   "n": "Maki de calidad (Maki Roll)",
+   "ing": "Pescado (cualquiera), Arroz, Alga (Seaweed)",
+   "efecto": "+100 energía, +45 salud",
+   "como": "La Reina de la Salsa (TV) o Gus.",
+   "uso": "Aprovechar pescado de poco valor convirtiéndolo en comida útil."
+  },
+  {
+   "n": "Sashimi",
+   "ing": "1 Pescado (cualquiera)",
+   "efecto": "+75 energía, +33 salud",
+   "como": "Regalo de Linus (3 corazones).",
+   "uso": "Comida barata de pescado sobrante. Lo ama Sebastian."
+  },
+  {
+   "n": "Pizza",
+   "ing": "Masa de trigo (Wheat Flour), Tomate, Queso",
+   "efecto": "+150 energía, +67 salud",
+   "como": "La Reina de la Salsa, Gus, o Saloon.",
+   "uso": "Buena comida de relleno. La aman Sam y Shane (pepperoni)."
+  },
+  {
+   "n": "Ñame caramelizado (Glazed Yams)",
+   "ing": "Ñame, Azúcar",
+   "efecto": "+90 energía, +40 salud",
+   "como": "La Reina de la Salsa (TV).",
+   "uso": "Comida fácil. La aman Lewis y Pam."
+  },
+  {
+   "n": "Sopa de cangrejo (Crab Cakes/Soup)",
+   "ing": "Cangrejo, Leche... (varía)",
+   "efecto": "Buffs varios",
+   "como": "Regalo de aldeano o TV.",
+   "uso": "Aprovechar mariscos de olla de cangrejo. La ama Penny."
+  },
+  {
+   "n": "Comida del granjero (Farmer's Lunch)",
+   "ing": "Tortilla (Omelet), Kale (Col rizada)",
+   "efecto": "+200 energía, +90 salud, Defensa +3",
+   "como": "Nivel 3 de Agricultura.",
+   "uso": "Buff de defensa + mucha energía. Ideal para combate en la mina."
+  }
+ ],
+ "lotes": [
+  {
+   "n": "Sala de Manualidades",
+   "items": "Lotes de recolección: Primaveral (narciso, diente de león, puerro, rábano silvestre), Veraniega (uva, baya especiada, guisante dulce), Otoñal (seta común, ciruela silvestre, avellana, mora), Invernal (raíz invernal, fruta cristal, ñame de nieve, azafrán), Construcción (99 madera x2, 99 piedra, 10 madera noble), Exótica (5 a elección).",
+   "recompensa": "🌉 Repara el PUENTE de la mina → desbloquea la Cantera.",
+   "como": "Recolectando ítems del suelo según la estación y talando árboles/minería.",
+   "uso": "Hacé el lote de recolección de cada estación apenas podés: muchos ítems son exclusivos de esa estación."
+  },
+  {
+   "n": "Alacena (Despensa)",
+   "items": "Cultivos de Primavera (chirivía, judía verde, coliflor, patata), de Verano (tomate, chile, arándano, melón), de Otoño (maíz, berenjena, calabaza, ñame), de Calidad (5 oro de: chirivía/melón/calabaza/maíz), Origen Animal (5 de: leche XXL, huevo XXL, leche de cabra, lana, huevo de pato), Artesano (6 de: aceite de trufa, tela, queso, miel, mermelada, frutas de árbol).",
+   "recompensa": "🏡 Repara el INVERNADERO → cultivar cualquier cosa todo el año.",
+   "como": "Cultivando y reservando parte de la cosecha. Usá fertilizante para los de calidad oro.",
+   "uso": "La recompensa más valiosa del juego: el invernadero. Priorizala."
+  },
+  {
+   "n": "Sala de Calderas",
+   "items": "Lote del Herrero (lingote de cobre, hierro, oro), del Geólogo (cuarzo, cristal terrestre, lágrima helada, cuarzo de fuego), del Aventurero (2 de: 99 babas, 10 alas de murciélago, esencia solar, esencia del vacío).",
+   "recompensa": "🚃 Repara las VAGONETAS (minecarts) → viaje rápido entre minas, pueblo, parada de bus y cantera.",
+   "como": "Minería y fundición. Las esencias salen de monstruos de la mina.",
+   "uso": "El viaje rápido te ahorra muchísimo tiempo. Hacelo cuando tengas hierro/oro."
+  },
+  {
+   "n": "Pecera",
+   "items": "Lote de Río (pez sol, bagre, sábalo, trucha tigre), de Lago (trucha arcoíris, carpa, cabeza de toro, esturión), de Océano (sardina, atún, pargo, tilapia), Nocturno (lucioperca, besugo, anguila), Especial (pez globo, pez fantasma, pez arena, woodskip), de Trampas (5 mariscos: langosta, cangrejo, camarón, etc.).",
+   "recompensa": "💎 Rompe el PEÑASCO BRILLANTE junto a la mina y Willy te da la Batea de cobre (panning).",
+   "como": "Pescando en cada bioma según estación/clima/hora. Las trampas se llenan solas.",
+   "uso": "El lote más largo (depende de estaciones). Empezá temprano y colocá ollas de cangrejo desde ya."
+  },
+  {
+   "n": "Caja Fuerte (Bóveda)",
+   "items": "Solo DINERO: 4 lotes de 2.500g, 5.000g, 10.000g y 25.000g (total 42.500g).",
+   "recompensa": "🚌 Repara el AUTOBÚS → desbloquea el Desierto Calico (Oasis, Caverna Calavera, Sandy).",
+   "como": "Pagando con oro. No necesitás ítems.",
+   "uso": "Junta plata y desbloqueá el desierto: minería de iridio, carambola, ruibarbo. Clave para escalar."
+  },
+  {
+   "n": "Tablón de Anuncios",
+   "items": "Lote de Forraje (10 trigo, 10 heno, 3 manzanas), Investigación de campo (seta púrpura, concha nautilus, perca, geoda congelada), del Chef (jarabe de arce, helecho violín, trufa, amapola, makizushi, huevo frito), de Tintes (seta roja, erizo de mar, girasol, pluma de pato, aguamarina, col roja), del Encantador (resina de roble, vino, pata de conejo, granada).",
+   "recompensa": "❤️ +2 corazones de amistad con TODOS los aldeanos no solteros.",
+   "como": "Mezcla de recolección, cocina, pesca y artesanía. Se desbloquea tras 3 lotes.",
+   "uso": "El de tintes y chef requieren ítems variados: andá juntándolos en un cofre aparte."
+  }
+ ],
+ "animales": [
+  {
+   "n": "Gallina (Chicken)",
+   "edif": "Gallinero",
+   "precio": "800g (Marnie)",
+   "prod": "Huevo (diario)",
+   "desc": "El animal más barato y accesible. Pone un huevo por día si está alimentada. Gallinas felices ponen huevos XXL y de calidad.",
+   "uso": "Huevo → Mayonesa (mayonesera) sube mucho el valor. Ideal para empezar. Construí el gallinero primero."
+  },
+  {
+   "n": "Pato (Duck)",
+   "edif": "Gallinero grande (Big Coop)",
+   "precio": "1200g",
+   "prod": "Huevo de pato (cada 2 días) + plumas",
+   "desc": "Requiere mejorar a Gallinero grande. Pone huevo de pato cada 2 días, más valioso que el de gallina. A veces da plumas.",
+   "uso": "Huevo de pato → Mayonesa de pato (más cara). Pluma de pato para el Lote de tintes."
+  },
+  {
+   "n": "Conejo (Rabbit)",
+   "edif": "Gallinero de lujo (Deluxe Coop)",
+   "precio": "8000g",
+   "prod": "Lana (cada 4 días) + pata de conejo (raro)",
+   "desc": "Requiere Gallinero de lujo. Da lana periódicamente y, con baja probabilidad, una Pata de conejo (muy valiosa).",
+   "uso": "Lana → Tela (telar). Pata de conejo se vende caro y es regalo universal amado."
+  },
+  {
+   "n": "Dinosaurio (Dinosaur)",
+   "edif": "Gallinero grande (incubadora)",
+   "precio": "Huevo raro (incubar)",
+   "prod": "Huevo de dinosaurio (cada 7 días)",
+   "desc": "De los más raros. Se incuba un Huevo de dinosaurio (de excavar, pescar, o monstruos) en la incubadora del Gallinero grande.",
+   "uso": "Huevo de dino → Mayonesa de dinosaurio. Coleccionable/curiosidad."
+  },
+  {
+   "n": "Vaca (Cow)",
+   "edif": "Establo",
+   "precio": "1500g",
+   "prod": "Leche (diaria)",
+   "desc": "De los animales más productivos. Da Leche todos los días (se ordeña con cubeta). Vacas felices dan Leche XXL.",
+   "uso": "Leche → Queso (prensa de queso): mucho más valor. Añejá el queso en tonel para máxima ganancia."
+  },
+  {
+   "n": "Cabra (Goat)",
+   "edif": "Establo grande (Big Barn)",
+   "precio": "4000g",
+   "prod": "Leche de cabra (cada 2 días)",
+   "desc": "Requiere Establo grande. Da Leche de cabra cada 2 días. El Queso de cabra es de mejor calidad/valor que el normal.",
+   "uso": "Leche de cabra → Queso de cabra (premium). Regalo amado de Maru y Leah."
+  },
+  {
+   "n": "Oveja (Sheep)",
+   "edif": "Establo grande (Big Barn)",
+   "precio": "8000g",
+   "prod": "Lana (cada 3 días)",
+   "desc": "Requiere Establo grande. Le crece pelaje cada 3 días (se esquila con tijeras). Con afecto + profesión Pastor, cada día.",
+   "uso": "Lana → Tela (telar). Producción rápida y constante con buen afecto."
+  },
+  {
+   "n": "Cerdo (Pig)",
+   "edif": "Establo grande (Big Barn)",
+   "precio": "16000g",
+   "prod": "Trufa (al salir afuera)",
+   "desc": "Caro pero el MÁS rentable. No da producto en el edificio: hay que dejarlo salir para que desentierre Trufas (no en invierno).",
+   "uso": "Trufa → Aceite de trufa (aceitera): de lo más rentable del juego. Dejalos pastar afuera todo el día."
+  },
+  {
+   "n": "Avestruz (Ostrich)",
+   "edif": "Granero (incubar)",
+   "precio": "Huevo raro (Isla Jengibre)",
+   "prod": "Huevo de avestruz (cada 7 días)",
+   "desc": "De la 1.5. Se incuba un Huevo de avestruz (de Isla Jengibre) en la Incubadora de avestruces. El huevo da 10 mayonesas.",
+   "uso": "Huevo → 10 Mayonesa de avestruz por tanda. Contenido de isla/endgame."
+  },
+  {
+   "n": "Caballo (Horse)",
+   "edif": "Establo de caballo",
+   "precio": "10000g (el establo, Robin)",
+   "prod": "—",
+   "desc": "No produce nada, pero te mueve un 30% más rápido. Construí su establo con Robin. Montalo para recorrer el valle.",
+   "uso": "Movilidad. Ahorra muchísimo tiempo. Ponele sombrero si querés."
+  },
+  {
+   "n": "Perro / Gato (Mascota)",
+   "edif": "—",
+   "precio": "Gratis",
+   "prod": "— (afecto)",
+   "desc": "Elegís uno al crear la partida. No produce, pero subir su afecto (acariciar + llenar el bol de agua) suma en la evaluación final del abuelo.",
+   "uso": "Compañía + puntos para el Espíritu de la Cosecha. Llenale el agua cada día."
+  }
+ ]
+};
+
+</script>
+<script>
+const CATS = [
+  {id:"guias", label:"🗺️ Guías", kind:"Guía de progreso"},
+  {id:"cultivos", label:"🌱 Cultivos", kind:"Cultivo"},
+  {id:"peces", label:"🎣 Peces", kind:"Pez"},
+  {id:"aldeanos", label:"👥 Aldeanos", kind:"Aldeano"},
+  {id:"recursos", label:"⛏️ Recursos", kind:"Recurso / Mineral"},
+  {id:"artesania", label:"⚙️ Máquinas", kind:"Máquina / Artesanía"},
+  {id:"cocina", label:"🍳 Cocina", kind:"Receta de cocina"},
+  {id:"lotes", label:"📦 Lotes", kind:"Lote del Centro Comunitario"},
+  {id:"animales", label:"🐄 Animales", kind:"Animal de granja"}
+];
+let cur="guias", q="";
+const tabsEl=document.getElementById("tabs");
+const contentEl=document.getElementById("content");
+const countEl=document.getElementById("count");
+const searchEl=document.getElementById("search");
+const overlay=document.getElementById("overlay");
+const modal=document.getElementById("modal");
+
+CATS.forEach(c=>{
+  const b=document.createElement("button");
+  b.className="tab"+(c.id===cur?" on":""); b.textContent=c.label;
+  b.onclick=()=>{cur=c.id; q=""; searchEl.value=""; [...tabsEl.children].forEach(x=>x.classList.remove("on")); b.classList.add("on"); render();};
+  tabsEl.appendChild(b);
+});
+searchEl.addEventListener("input", e=>{ q=e.target.value.toLowerCase().trim(); render(); });
+const matchesAll = it => JSON.stringify(it).toLowerCase().includes(q);
+
+function render(){
+  if(q){ renderSearch(); return; }
+  if(cur==="guias"){ countEl.textContent=DB.guias.length+" guías"; renderGuias(DB.guias); return; }
+  countEl.textContent=DB[cur].length+" entradas";
+  renderCards(DB[cur], cur);
+}
+function renderSearch(){
+  let html="", found=0;
+  CATS.forEach(c=>{
+    if(c.id==="guias") return;
+    const items=DB[c.id].filter(matchesAll);
+    if(items.length){
+      found+=items.length;
+      html+=`<div style="margin:14px 0 8px;color:var(--acc);font-weight:bold;font-size:.85rem">${c.label} (${items.length})</div>`;
+      html+=`<div class="grid">`+items.map(it=>cardHTML(it,c.id)).join("")+`</div>`;
+    }
+  });
+  const gh=DB.guias.filter(matchesAll);
+  if(gh.length){ found+=gh.length; html+=`<div style="margin-top:16px"></div>`+gh.map(guideHTML).join(""); }
+  countEl.textContent=found+" resultados para \""+q+"\"";
+  contentEl.innerHTML = found ? html : `<div class="empty">Nada encontrado para "${q}". Probá con otra palabra.</div>`;
+  bindCards();
+}
+function badge(it,cat){
+  if(cat==="cultivos") return (it.tipo&&it.tipo.startsWith("Repet"))?`<span class="badge">Repite</span>`:(it.semilla==="Rara"?`<span class="badge rare">Raro</span>`:`<span class="badge">${(it.est||"").split("/")[0]}</span>`);
+  if(cat==="peces") return it.dif==="Extrema"?`<span class="badge rare">Legendario</span>`:`<span class="badge fish">${it.dif}</span>`;
+  if(cat==="aldeanos") return it.solt?`<span class="badge rare">Casable</span>`:`<span class="badge">Pueblo</span>`;
+  if(cat==="recursos") return it.n.includes("prismát")?`<span class="badge rare">Raro</span>`:`<span class="badge">Mineral</span>`;
+  if(cat==="artesania") return `<span class="badge craft">Máquina</span>`;
+  if(cat==="cocina") return `<span class="badge food">Plato</span>`;
+  if(cat==="lotes") return `<span class="badge bundle">Sala</span>`;
+  if(cat==="animales") return `<span class="badge animal">Animal</span>`;
+  return "";
+}
+function metaLine(it,cat){
+  if(cat==="cultivos") return `${it.est} · ${it.dias}d · vende ${it.venta}g`;
+  if(cat==="peces") return `${it.est} · ${it.lugar}`;
+  if(cat==="aldeanos") return `Cumple: ${it.cumple}`;
+  if(cat==="recursos") return it.lugar;
+  if(cat==="artesania") return it.lugar;
+  if(cat==="cocina") return it.efecto;
+  if(cat==="lotes") return it.recompensa;
+  if(cat==="animales") return `${it.edif} · ${it.precio}`;
+  return "";
+}
+function cardHTML(it,cat){
+  return `<div class="card" data-cat="${cat}" data-name="${it.n.replace(/"/g,'&quot;')}">
+    ${badge(it,cat)}<h3>${it.n}</h3>
+    <div class="meta">${metaLine(it,cat)}</div>
+    <div class="snippet">${it.desc}</div></div>`;
+}
+function renderCards(arr,cat){ contentEl.innerHTML=`<div class="grid">`+arr.map(it=>cardHTML(it,cat)).join("")+`</div>`; bindCards(); }
+function bindCards(){ document.querySelectorAll(".card").forEach(c=>{ c.onclick=()=>openModal(c.dataset.cat,c.dataset.name); }); }
+function guideHTML(g){ return `<div class="guide"><h3>${g.est}</h3><div class="sub">${g.desc}</div><ol>${g.pasos.map(p=>`<li>${p}</li>`).join("")}</ol></div>`; }
+function renderGuias(arr){ contentEl.innerHTML=arr.map(guideHTML).join(""); }
+
+function openModal(cat,name){
+  const it=DB[cat].find(x=>x.n===name); if(!it) return;
+  const kind=CATS.find(c=>c.id===cat).kind;
+  let rows="";
+  if(cat==="cultivos") rows=row("Estación",it.est)+row("Días en crecer",it.dias)+row("Tipo",it.tipo)+row("Precio semilla",typeof it.semilla==="number"?it.semilla+"g":it.semilla)+row("Precio venta",it.venta+"g");
+  else if(cat==="peces") rows=row("Estación",it.est)+row("Dónde",it.lugar)+row("Clima",it.clima)+row("Horario",it.hora)+row("Dificultad",it.dif);
+  else if(cat==="aldeanos") rows=row("Cumpleaños",it.cumple)+row("Casable",it.solt?"Sí 💍":"No");
+  else if(cat==="recursos") rows=row("Dónde conseguir",it.lugar)+row("Herramienta",it.herr);
+  else if(cat==="artesania") rows=row("Cómo conseguir",it.lugar)+(it.mat?row("Materiales",it.mat):"");
+  else if(cat==="cocina") rows=row("Ingredientes",it.ing)+row("Efecto",it.efecto)+row("Cómo conseguir receta",it.como);
+  else if(cat==="lotes") rows=row("Recompensa",it.recompensa)+row("Cómo completarlo",it.como);
+  else if(cat==="animales") rows=row("Vive en",it.edif)+row("Precio",it.precio)+row("Produce",it.prod);
+  let extra="";
+  if(cat==="aldeanos"){
+    extra=`<div class="block"><div class="label">Le encanta (regalos)</div><div class="tags">${it.ama.map(a=>`<span class="tag love">${a}</span>`).join("")}</div></div>
+           <div class="block"><div class="label">Odia</div><div class="tags">${it.odia.map(a=>`<span class="tag hate">${a}</span>`).join("")}</div></div>`;
+  }
+  if(cat==="lotes"){
+    extra=`<div class="block"><div class="label">Lotes que incluye</div><p>${it.items}</p></div>`;
+  }
+  modal.innerHTML=`<button class="close" onclick="closeM()">✕</button>
+    <h2>${it.n}</h2><div class="kind">${kind}</div>${rows}
+    <div class="block"><div class="label">${cat==='lotes'?'Detalle':'Qué es'}</div><p>${it.desc}</p></div>
+    <div class="block"><div class="label">${cat==='lotes'?'Consejo':'Para qué sirve'}</div><p>${it.uso}</p></div>${extra}`;
+  overlay.classList.add("show");
+}
+function row(k,v){ return `<div class="row"><span>${k}</span><span>${v}</span></div>`; }
+function closeM(){ overlay.classList.remove("show"); }
+overlay.onclick=e=>{ if(e.target===overlay) closeM(); };
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeM(); });
+render();
+</script>
+</body>
+</html>
