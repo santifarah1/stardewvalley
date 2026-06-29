@@ -102,7 +102,7 @@ footer{text-align:center; color:var(--dim); font-size:.74rem; padding:22px 16px 
 <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
 <footer>Datos basados en es.stardewvalleywiki.com · App offline de un solo archivo<br>Selección curada y ampliable editando el objeto DB del código</footer>
 <script>
-// ===== Base de datos Stardew Valley (ampliada con datos de es.stardewvalleywiki.com) =====
+// ===== Base de datos Stardew Valley (datos de es.stardewvalleywiki.com) =====
 const DB = {
  "cultivos": [
   {
@@ -1999,6 +1999,486 @@ const DB = {
    "desc": "Elegís uno al crear la partida. No produce, pero subir su afecto (acariciar + llenar el bol de agua) suma en la evaluación final del abuelo.",
    "uso": "Compañía + puntos para el Espíritu de la Cosecha. Llenale el agua cada día."
   }
+ ],
+ "artefactos": [
+  {
+   "n": "Rollo enano I",
+   "venta": "1g",
+   "lugar": "Labrar Minas/Caverna (0,16%); botín de monstruos (0,5%)",
+   "desc": "Pergamino amarillento con escritura enana, atado con lazo rojo.",
+   "uso": "Donar al Museo. Junto con los otros 3 rollos enanos da la Guía de Traducción Enana (entender al comerciante Enano)."
+  },
+  {
+   "n": "Rollo enano II",
+   "venta": "1g",
+   "lugar": "Labrar Minas pisos 1-40 (0,1%); botín de Fantasma/Murciélago de hielo/Duende del polvo/Baba azul (0,5%)",
+   "desc": "Pergamino con escritura enana, cinta verde.",
+   "uso": "Donar al Museo. Parte del set de 4 rollos para la Guía de Traducción Enana."
+  },
+  {
+   "n": "Rollo enano III",
+   "venta": "1g",
+   "lugar": "Botín de monstruos (1,5% Baba azul, 0,5% resto)",
+   "desc": "Pergamino con escritura enana, cuerda azul.",
+   "uso": "Donar al Museo. Parte del set de 4 rollos."
+  },
+  {
+   "n": "Rollo enano IV",
+   "venta": "1g",
+   "lugar": "Casi cualquier monstruo (0,1%); labrar Minas pisos 80+ (0,2%)",
+   "desc": "Pergamino con escritura enana, cadena dorada.",
+   "uso": "Donar al Museo. Completa el set: los 4 rollos donados dan la Guía de Traducción Enana."
+  },
+  {
+   "n": "Ánfora quebrada",
+   "venta": "40g",
+   "lugar": "Pueblo (3%); Cofre artefacto (3,7%)",
+   "desc": "Antigua vasija de cerámica para transportar mercancías secas y líquidas.",
+   "uso": "Donar al Museo, vender o regalar a Penny/Enano."
+  },
+  {
+   "n": "Punta de flecha",
+   "venta": "40g",
+   "lugar": "Montaña/Bosque/Parada de autobús (1,6%); Cofre artefacto (3,7%)",
+   "desc": "Punta toscamente diseñada para la caza.",
+   "uso": "Donar al Museo, vender o regalar a Penny/Enano."
+  },
+  {
+   "n": "Muñeco antiguo",
+   "venta": "60g",
+   "lugar": "Montaña (3%), Bosque/Parada (2,4%), Pueblo (0,8%); cofres de pesca; Fiesta de la Estrella Invernal",
+   "desc": "Muñeco antiguo lleno de suciedad. Pudo ser juguete, decoración o herramienta ritual.",
+   "uso": "Donar al Museo. También sirve para el Lote Niños del Tablón (lotes mezclados)."
+  },
+  {
+   "n": "Joyería élfica",
+   "venta": "200g",
+   "lugar": "Bosque (0,8%); cofres de pesca; Cofre artefacto (3,7%)",
+   "desc": "Sucia pero hermosa, con escritura fluida que algunos creen lengua élfica.",
+   "uso": "Donar al Museo, vender o regalar a Penny/Enano."
+  },
+  {
+   "n": "Palo de mascar",
+   "venta": "50g",
+   "lugar": "Montaña/Bosque (1,5%), Pueblo (0,8%); botín de Cavadorín (2%); Cofre artefacto",
+   "desc": "La gente antigua mascaba estos palos para limpiarse los dientes.",
+   "uso": "Donar al Museo, vender o regalar."
+  },
+  {
+   "n": "Abanico ornamental",
+   "venta": "300g",
+   "lugar": "Playa (1,6%), Bosque (0,7%), Pueblo (0,6%); cofres de pesca; Cofre artefacto",
+   "desc": "Abanico exquisito de una noble. El valle fue lugar vacacional de los ricos de la sexta era.",
+   "uso": "Donar al Museo, vender o regalar."
+  },
+  {
+   "n": "Huevo de dinosaurio",
+   "venta": "350g",
+   "lugar": "Montaña (0,6%); pisos prehistóricos de la Caverna Calavera; botín de Pimienta Rex (10%); cofres de pesca",
+   "desc": "Huevo gigante de dinosaurio con la cáscara intacta.",
+   "uso": "Donar al Museo, incubar un Dinosaurio (Gallinero grande) o hacer Mayonesa de dinosaurio. Incubá antes de donar para no perderlo."
+  },
+  {
+   "n": "Disco raro",
+   "venta": "300g",
+   "lugar": "Cofres de pesca; botín de Murciélagos (0,1%), Bestia/Chamán de las sombras y Arañas (0,3%); Cofre artefacto",
+   "desc": "Disco negro y pesado con piedras rojas. Al sostenerlo te abruma una sensación de pavor.",
+   "uso": "Donar al Museo. Donar Disco raro + Dispositivo enano (+9 artefactos más) da la pintura «Ofrenda quemada»."
+  },
+  {
+   "n": "Espada antigua",
+   "venta": "100g",
+   "lugar": "Bosque (0,7%), Montaña (0,6%); cofres de pesca; Cofre artefacto",
+   "desc": "Restos de una antigua espada. La hoja es óxido pero la empuñadura está decorada.",
+   "uso": "Donar al Museo, vender o regalar."
+  },
+  {
+   "n": "Cuchara oxidada",
+   "venta": "25g",
+   "lugar": "Pueblo (4%+); cofres de pesca; labrar Minas/Caverna (0,16%); Cofre artefacto",
+   "desc": "Una vieja cuchara normal, de unos diez años. No demasiado interesante.",
+   "uso": "Donar al Museo, vender o regalar."
+  },
+  {
+   "n": "Espuela oxidada",
+   "venta": "25g",
+   "lugar": "Granja (10%); labrar Minas/Caverna (0,16%); cofres de pesca; Cofre artefacto",
+   "desc": "Espuela de la bota de un vaquero. Aquí han criado animales por generaciones.",
+   "uso": "Donar al Museo, vender o regalar."
+  },
+  {
+   "n": "Engranaje oxidado",
+   "venta": "25g",
+   "lugar": "Montaña (4%); labrar Minas/Caverna (0,16%); cofres de pesca; Cofre artefacto",
+   "desc": "Engranaje bien conservado de alguna máquina antigua. Podría ser tecnología enana.",
+   "uso": "Donar al Museo, vender o regalar."
+  },
+  {
+   "n": "Estatua de gallina",
+   "venta": "50g",
+   "lugar": "Granja (9%); cofres de pesca; Cofre artefacto",
+   "desc": "Estatua de gallina sobre base de bronce. Los antiguos apreciaban las gallinas.",
+   "uso": "Donar al Museo. Donarla + 4 artefactos más da el mueble Estatua de gallina."
+  },
+  {
+   "n": "Semilla milenaria",
+   "venta": "5g",
+   "lugar": "Bosque/Montaña (0,7%); cofres de pesca; botín de Bicho/Mosca/Larva (0,5%); Cofre artefacto",
+   "desc": "Semilla antigua y seca de alguna planta. Lleva mucho tiempo muerta.",
+   "uso": "⭐ Donarla da la RECETA de Semillas Milenarias + 1 paquete: desbloquea la Fruta Milenaria (cultivo top). Donala apenas la tengas."
+  },
+  {
+   "n": "Herramienta prehistórica",
+   "venta": "50g",
+   "lugar": "Parada de autobús (3%), Bosque (2,1%), Montaña (2%); cofres de pesca; Cofre artefacto",
+   "desc": "Algún tipo de herramienta antigua para cavar.",
+   "uso": "Donar al Museo, vender o regalar."
+  },
+  {
+   "n": "Estrella de mar seca",
+   "venta": "40g",
+   "lugar": "Playa (8%); cofres de pesca; Cofre artefacto",
+   "desc": "Estrella de mar del océano primitivo, sorprendentemente impoluta.",
+   "uso": "Donar al Museo. Puede pedirse en misiones del Estanque de peces."
+  },
+  {
+   "n": "Ancla",
+   "venta": "100g",
+   "lugar": "Playa (4%); cofres de pesca; Cofre artefacto",
+   "desc": "Pudo pertenecer a antiguos piratas.",
+   "uso": "Donar al Museo, vender o regalar."
+  },
+  {
+   "n": "Trocitos de cristal",
+   "venta": "20g",
+   "lugar": "Playa (7%); cofres de pesca; Cofre artefacto",
+   "desc": "Trocitos de cristal redondeados por la marea. De un antiguo mosaico o collar.",
+   "uso": "Donar al Museo, vender o regalar."
+  },
+  {
+   "n": "Flauta de hueso",
+   "venta": "100g",
+   "lugar": "Bosque/Montaña (0,7%), Pueblo (0,4%); cofres de pesca; Cofre artefacto",
+   "desc": "Instrumento de viento prehistórico tallado en hueso. Sonido inquietante.",
+   "uso": "Donar al Museo. Donarla + 2 artefactos más da el Bloque flauta (decoración musical)."
+  },
+  {
+   "n": "Hacha prehistórica",
+   "venta": "50g",
+   "lugar": "Parada de autobús (4%), Montaña/Bosque (3%); Cofre artefacto",
+   "desc": "De las primeras herramientas humanas: piedra golpeada con piedra para crear filo.",
+   "uso": "Donar al Museo, vender o regalar."
+  },
+  {
+   "n": "Yelmo enano",
+   "venta": "100g",
+   "lugar": "Labrar Minas pisos 1-40 (0,1%); Geoda (3%), Omnigeoda (1%); Cofre artefacto",
+   "desc": "Yelmo enano con grueso revestimiento de metal para protegerse de escombros y estalactitas.",
+   "uso": "Donar al Museo, vender o regalar."
+  },
+  {
+   "n": "Dispositivo enano",
+   "venta": "200g",
+   "lugar": "Labrar Minas pisos 41-80 (0,1%); Geoda de magma (4%), Omnigeoda (1%); Cofre artefacto",
+   "desc": "Tecnología enana avanzada. Sigue brillando y haciendo ruidos pero no sabés cómo se usa.",
+   "uso": "⭐ Necesario para fabricar el Ordenador de la Granja. Donalo y guardá uno extra."
+  },
+  {
+   "n": "Tambor antiguo",
+   "venta": "100g",
+   "lugar": "Parada/Bosque (0,7%), Pueblo (0,4%); Geoda de hielo (3%), Omnigeoda (1%); Cofre artefacto",
+   "desc": "Tambor de madera y piel de animal, de tono bajo y resonante.",
+   "uso": "Donar al Museo. Donarlo + 2 artefactos más da el Bloque tambor (decoración musical)."
+  },
+  {
+   "n": "Máscara dorada",
+   "venta": "500g",
+   "lugar": "Desierto (3%); Cofre artefacto (3,7%)",
+   "desc": "Máscara dorada inquietante de un ritual mágico, con una gran gema púrpura en la frente.",
+   "uso": "Donar al Museo, vender o regalar. De las más valiosas."
+  },
+  {
+   "n": "Reliquia dorada",
+   "venta": "250g",
+   "lugar": "Desierto (6%); Cofre artefacto (3,7%)",
+   "desc": "Losa dorada con jeroglíficos y dibujos en el frente.",
+   "uso": "Donar al Museo. Puede pedirse en misiones del Estanque de peces."
+  },
+  {
+   "n": "Muñeco extraño (verde)",
+   "venta": "1000g",
+   "lugar": "Cavar en casi cualquier lugar (poca prob.); cofres de pesca; ⭐ Nota Secreta #17 (garantizado)",
+   "desc": "Muñeco extraño sin descripción (???). Uno de los 2 muñecos raros.",
+   "uso": "Donar al Museo. La Nota Secreta #17 lo da garantizado (al norte de MercaJoja, junto al río)."
+  },
+  {
+   "n": "Muñeco extraño (amarillo)",
+   "venta": "1000g",
+   "lugar": "Cavar en casi cualquier lugar (poca prob.); cofres de pesca; ⭐ Nota Secreta #18 (garantizado)",
+   "desc": "Muñeco extraño sin descripción (???). El otro de los 2 muñecos raros.",
+   "uso": "Donar al Museo. La Nota Secreta #18 lo da garantizado (Desierto de Calico, sureste)."
+  },
+  {
+   "n": "Escápula prehistórica",
+   "venta": "100g",
+   "lugar": "Bosque (3-6%, más en verano/otoño), Pueblo (0,7%); botín de Esqueleto (0,5%); Piedra de huesos (0,8%)",
+   "desc": "Hueso conocido como «omóplato». No se sabe de qué especie.",
+   "uso": "Donar al Museo. Procesable en Molino de huesos → Fertilizante. Set de huesos da Esqueleto de perezoso."
+  },
+  {
+   "n": "Tibia prehistórica",
+   "venta": "100g",
+   "lugar": "Ferrocarril (4-8%), Pueblo (0,7%); botín de Pimienta Rex (30%); Piedra de huesos (0,8%)",
+   "desc": "Hueso duro y resistente de una pierna.",
+   "uso": "Donar al Museo. Procesable en Molino de huesos → Fertilizante."
+  },
+  {
+   "n": "Cráneo prehistórico",
+   "venta": "100g",
+   "lugar": "Montaña (4-8%); botín de Calavera encantada (1,3%); Piedra de huesos (0,8%)",
+   "desc": "Sin duda pertenecía a un mamífero.",
+   "uso": "Donar al Museo. Procesable en Molino de huesos → Fertilizante."
+  },
+  {
+   "n": "Mano esquelética",
+   "venta": "100g",
+   "lugar": "Bosque Trasero (4-8%), Playa (0,6%); botín de Calavera encantada (1,3%); Piedra de huesos",
+   "desc": "Es un milagro que piezas tan pequeñas hayan durado tanto.",
+   "uso": "Donar al Museo. Procesable en Molino de huesos → Fertilizante."
+  },
+  {
+   "n": "Costilla prehistórica",
+   "venta": "100g",
+   "lugar": "Pueblo (2,2-4%), Granja (0,8%); botín de Pimienta Rex (30%); Piedra de huesos",
+   "desc": "Marcas en el lateral sugieren que fue la cena de alguien.",
+   "uso": "Donar al Museo. Procesable en Molino de huesos → Fertilizante."
+  },
+  {
+   "n": "Vértebra prehistórica",
+   "venta": "100g",
+   "lugar": "Parada de autobús (3-5%); botín de Pimienta Rex (30%); Piedra de huesos (0,8%)",
+   "desc": "Segmento de la columna de una criatura prehistórica.",
+   "uso": "Donar al Museo. Procesable en Molino de huesos → Fertilizante."
+  },
+  {
+   "n": "Cola esquelética",
+   "venta": "100g",
+   "lugar": "Labrar Minas/Caverna; cofres de pesca (3,1-3,4%); Piedra de huesos (0,8%)",
+   "desc": "Bastante corta para ser una cola.",
+   "uso": "Donar al Museo. Procesable en Molino de huesos → Fertilizante."
+  },
+  {
+   "n": "Fósil de nautilo",
+   "venta": "80g",
+   "lugar": "Playa (1,8%); cofres de pesca (3,1-3,4%); Piedra de huesos (0,8%)",
+   "desc": "Hace siglos vivió en un antiguo arrecife de coral.",
+   "uso": "Donar al Museo. Procesable en Molino de huesos → Fertilizante."
+  },
+  {
+   "n": "Fósil de anfibio",
+   "venta": "150g",
+   "lugar": "Bosque/Montaña (0,6%); cofres de pesca (3,1-3,4%); Piedra de huesos",
+   "desc": "Patas traseras cortas: algún tipo de sapo primitivo.",
+   "uso": "Donar al Museo. Procesable en Molino de huesos → Fertilizante."
+  },
+  {
+   "n": "Fósil de palmera",
+   "venta": "100g",
+   "lugar": "Desierto (7%), Bosque (3-5%), Playa (0,6%); Piedra de huesos (0,8%)",
+   "desc": "Relativamente comunes, pero este se conserva muy bien.",
+   "uso": "Donar al Museo. Procesable en Molino de huesos → Fertilizante."
+  },
+  {
+   "n": "Trilobites",
+   "venta": "50g",
+   "lugar": "Playa (2,3-5%), Bosque (1,9%), Montaña (1,8%); Piedra de huesos (0,8%)",
+   "desc": "Pariente del cangrejo que se extinguió hace mucho.",
+   "uso": "Donar al Museo. Procesable en Molino de huesos → Fertilizante."
+  },
+  {
+   "n": "Cómo conseguir artefactos",
+   "venta": "-",
+   "lugar": "Lugares de artefacto, minas, monstruos, geodas, cofres de pesca",
+   "desc": "Se sacan cavando los 'lugares de artefacto' (3 gusanitos en el suelo, más comunes en invierno), labrando minas, matando monstruos, en geodas o en cofres de pesca. Hay 42 en total para el Museo.",
+   "uso": "A Penny y al Enano les gustan TODOS de regalo. Las Cajas de artefacto (comerciante del desierto, por Omnigeodas) dan uno al azar: lo más rápido para completar."
+  },
+  {
+   "n": "Recompensas del Museo (hitos)",
+   "venta": "-",
+   "lugar": "Donar a Gunther (95 ítems: 42 artefactos + 53 minerales)",
+   "desc": "Donar cantidades da premios. A 60 ítems: la Llave Oxidada (cloacas → Krobus). En hitos tempranos: semillas raras (coliflor, melón, carambola, calabaza).",
+   "uso": "Completar el Museo entero desbloquea decoraciones y la estrella de cristal. Donar todos los huesos prehistóricos da el Esqueleto de perezoso."
+  }
+ ],
+ "notas": [
+  {
+   "n": "Cómo desbloquearlas (La Lupa)",
+   "tipo": "Misión inicial",
+   "desc": "En INVIERNO, salí de la granja a la Parada de autobús entre 6am y 4pm. Verás una sombra (Krobus) huir. Seguí las huellas hasta el arbusto a la izquierda del Centro Comunitario y agitalo: te da la LUPA. Si pasó el invierno, el arbusto sigue ahí en otras estaciones.",
+   "uso": "La Lupa permite encontrar notas al cavar, talar, minar, pescar o matar monstruos. Cosechar un Cultivo Gigante da una nota GARANTIZADA. Pescar y cavar artefactos son los mejores métodos. Hay 27 notas."
+  },
+  {
+   "n": "Nota #1 — Abigail",
+   "tipo": "Gustos",
+   "desc": "Página del diario de Abigail con cosas que le gustan.",
+   "uso": "Revela regalos amados de Abigail: Amatista, Pastel de chocolate, Anguila picante, Tarta de moras, Calabaza."
+  },
+  {
+   "n": "Nota #2 — Lista de Sam",
+   "tipo": "Gustos",
+   "desc": "Lista de compras navideñas de Sam con los favoritos de su familia.",
+   "uso": "Revela gustos: Sebastian (Lágrima helada, Sashimi), Penny (Esmeralda, Amapola), Vincent (Uva, Dulce de grosellas), Jodi, Kent y Sam (Higo chumbo, Bollito de arce, Pizza)."
+  },
+  {
+   "n": "Nota #3 — Leah",
+   "tipo": "Gustos",
+   "desc": "Nota de Leah describiendo su cena perfecta.",
+   "uso": "Revela regalos amados de Leah: Ensalada, Queso de cabra, Trufa, Vino y Muffin de amapola."
+  },
+  {
+   "n": "Nota #4 — Maru",
+   "tipo": "Gustos",
+   "desc": "Nota de Maru con piezas que le faltan para su invento.",
+   "uso": "Revela gustos de Maru: Lingote de oro, Lingote de iridio, Pila (Battery Pack), Diamante, Fresas."
+  },
+  {
+   "n": "Nota #5 — Penny",
+   "tipo": "Gustos",
+   "desc": "Nota de Penny con regalos que quiere dar a otros.",
+   "uso": "Revela gustos: Pam (Chirivía, Ñames glaseados, NADA de cerveza), Jas (Rosa hada, Pudin de ciruela), Vincent (Pastel rosa, Uva), George (Puerro, Setas salteadas), Evelyn (Remolacha, Tulipán)."
+  },
+  {
+   "n": "Nota #6 — Pedidos del Saloon",
+   "tipo": "Gustos",
+   "desc": "Pedidos especiales del Salón Fruta Estelar.",
+   "uso": "Revela gustos: Lewis (Botín otoñal), Marnie (Tarta de calabaza), Demetrius (Estofado de judías), Caroline (Taco de pescado)."
+  },
+  {
+   "n": "Nota #7 — Solteros mayores",
+   "tipo": "Gustos",
+   "desc": "Página de diario sobre los solteros mayores del pueblo.",
+   "uso": "Revela gustos: Harvey (Café, Pepinillos), Elliott (Tortas de cangrejo, Granada), Shane (Cerveza, Pizza, Bocaditos de pimiento)."
+  },
+  {
+   "n": "Nota #8 — Haley y Emily",
+   "tipo": "Gustos",
+   "desc": "Nota de los padres de Haley y Emily.",
+   "uso": "Revela gustos: Haley (Pastel rosa, Girasol), Emily (Gemas, Lana)."
+  },
+  {
+   "n": "Nota #9 — Dieta de Alex",
+   "tipo": "Gustos",
+   "desc": "Dieta de entrenamiento de fuerza de Alex.",
+   "uso": "Revela regalos amados de Alex: Desayuno inglés (Complete Breakfast) y Banquete de salmón."
+  },
+  {
+   "n": "Nota #10 — Caverna Calavera",
+   "tipo": "Misión",
+   "desc": "«Alguien te espera en el nivel 100 de la Caverna Calavera...». Añade la misión 'Nota críptica'.",
+   "uso": "Llegá al nivel 100 de la Caverna Calavera. El Señor Qi te da Leche de serpiente de iridio (+25 de salud máxima permanente). Usá 10 o menos escaleras para que te felicite."
+  },
+  {
+   "n": "Nota #11 — La foto misteriosa",
+   "tipo": "Coleccionable",
+   "desc": "No tiene texto: una imagen de una anciana y una niña rodeadas de animales. El misterio sin resolver más famoso del juego.",
+   "uso": "Solo coleccionable. No tiene recompensa ni solución conocida."
+  },
+  {
+   "n": "Nota #12 — Botes de basura",
+   "tipo": "Consejo",
+   "desc": "Cuenta que se encuentran cosas en la basura del pueblo: plato del día en el Saloon, galletas en lo de los Mullner, tesoros en Herrería y Museo.",
+   "uso": "Revisá los tachos del pueblo (mejor con el Anillo basurero) para objetos gratis."
+  },
+  {
+   "n": "Nota #13 — Junimo de peluche",
+   "tipo": "Tesoro",
+   "desc": "«Las doce en punto. Último día de la temporada. Revisa el arbusto sobre el parque infantil.»",
+   "uso": "A las 12:00pm del día 28 de cualquier estación, interactuá con el arbusto sobre el parque infantil para conseguir un Junimo de peluche (decoración)."
+  },
+  {
+   "n": "Nota #14 — Estatua Junimo",
+   "tipo": "Tesoro",
+   "desc": "«Escondí algo detrás del centro cívico.»",
+   "uso": "Detrás del Centro Comunitario, contra la valla de madera a la derecha (oculto por el techo), cavá con pico o azada para una Estatua de Piedra Junimo."
+  },
+  {
+   "n": "Nota #15 — Show de sirenas",
+   "tipo": "Puzle",
+   "desc": "«Espectáculo de la Sirena: 1-5-4-2-3»",
+   "uso": "En el Mercado Nocturno (invierno, días 15-17), entrá al bote del Espectáculo de la Sirena y tocá las conchas en orden 1-5-4-2-3 (izq. a der.) para ganar una Perla. Una por partida."
+  },
+  {
+   "n": "Nota #16 — Tesoro del ferrocarril",
+   "tipo": "Mapa",
+   "desc": "Dibujo que marca un punto al norte de las vías del tren.",
+   "uso": "Cavá un espacio a la derecha de la roca grande al norte del Ferrocarril para un Cofre del tesoro."
+  },
+  {
+   "n": "Nota #17 — Muñeco verde",
+   "tipo": "Mapa",
+   "desc": "Dibujo que marca un punto al norte de MercaJoja, junto al río.",
+   "uso": "Cavá en el extremo de tierra más al norte (lado este), al norte de MercaJoja, para el Muñeco extraño (verde). Cuidado de no tirarlo al río. Clave para el Museo."
+  },
+  {
+   "n": "Nota #18 — Muñeco amarillo",
+   "tipo": "Mapa",
+   "desc": "Dibujo que marca un punto en el Desierto de Calico.",
+   "uso": "En el Desierto de Calico, cavá al suroeste de la banca (sureste del mapa) para el Muñeco extraño (amarillo). Clave para el Museo."
+  },
+  {
+   "n": "Nota #19 — Lewis de oro",
+   "tipo": "Mapa",
+   "desc": "Representación del Camino del Sauce 1 con flechas. Seguí cada flecha hasta chocar un obstáculo.",
+   "uso": "Te lleva a la estatua de Lewis de oro macizo detrás de la Mansión del alcalde. Si la colocás en el pueblo, al día siguiente Lewis te manda 750g y una carta avergonzada."
+  },
+  {
+   "n": "Nota #20 — Amuleto de suerte",
+   "tipo": "Mapa",
+   "desc": "Representación de la plaza del pueblo. Seguí las instrucciones desde el ojo central.",
+   "uso": "Te lleva a un camión junto a MercaJoja. El conductor te cambia una Pata de conejo por un Amuleto especial (+suerte permanente). Llevá la pata."
+  },
+  {
+   "n": "Nota #21 — Marnie y Lewis",
+   "tipo": "Escena",
+   "desc": "Dibujo con hora y lugar.",
+   "uso": "A las 12:40am, interactuá con el arbusto grande al noroeste del puente del pueblo a la playa: Marnie y Lewis saltan del arbusto. Escena cómica, sin objeto."
+  },
+  {
+   "n": "Nota #22 — El misterioso Qi",
+   "tipo": "Misión",
+   "desc": "«¿Has encontrado mi secreto en el túnel oscuro? -Qi»",
+   "uso": "Llevá una Pila al Túnel (oeste de la parada de autobús) y ponela en la caja de la pared central para iniciar la misión 'El misterioso Qi' (contenido del Sr. Qi)."
+  },
+  {
+   "n": "Nota #23 — El oso (bayas)",
+   "tipo": "Misión",
+   "desc": "«Si puedes ler hesto... ben al voske sicreto. Trae sarsa d'arze.» Añade la misión 'Nota Extraña'.",
+   "uso": "Llevá Jarabe de arce al Bosque Secreto (6am-7pm): un Oso te da su sabiduría y vendés Moras y Frambuesas por 3x más para siempre."
+  },
+  {
+   "n": "Nota #24 — Color de Junimos",
+   "tipo": "Consejo",
+   "desc": "Página del libro de M. Jasper sobre los Junimos y su afinidad con las gemas.",
+   "uso": "Poné minerales/gemas dentro de una Cabaña Junimo para cambiar el color de los Junimos que cosechan. Una Esquirla prismática los hace de color cambiante."
+  },
+  {
+   "n": "Nota #25 — Collar perdido",
+   "tipo": "Misión",
+   "desc": "«Tomé prestado un collar de mamá y lo perdí cerca del spa...»",
+   "uso": "Pescá en el estanque junto al Spa (primavera/verano/otoño) para sacar el Collar de adornos. Con el collar puesto, hablá con Caroline (+50 amistad) o Abigail (+100)."
+  },
+  {
+   "n": "Nota #26 — Pasas y Junimos",
+   "tipo": "Consejo",
+   "desc": "«Antiguos Secretos de Granjero, línea 37: No hay mejor ayudante que un Junimo alimentado con pasas...»",
+   "uso": "Pista sobre alimentar Junimos con pasas (Raisins) en las cabañas Junimo. Contenido 1.6."
+  },
+  {
+   "n": "Nota #27 — El secreto del Abuelo",
+   "tipo": "Endgame",
+   "desc": "Carta del Abuelo: escondió 'un secreto muy especial', un compendio de sus mayores descubrimientos, en algún lugar del valle.",
+   "uso": "Pista hacia la Cueva de la Maestría (1.6). Se revela al dominar las 5 habilidades de maestría."
+  }
  ]
 };
 
@@ -2013,7 +2493,9 @@ const CATS = [
   {id:"artesania", label:"⚙️ Máquinas", kind:"Máquina / Artesanía"},
   {id:"cocina", label:"🍳 Cocina", kind:"Receta de cocina"},
   {id:"lotes", label:"📦 Lotes", kind:"Lote del Centro Comunitario"},
-  {id:"animales", label:"🐄 Animales", kind:"Animal de granja"}
+  {id:"animales", label:"🐄 Animales", kind:"Animal de granja"},
+  {id:"artefactos", label:"🏺 Artefactos", kind:"Artefacto del museo"},
+  {id:"notas", label:"📜 Notas", kind:"Nota secreta"}
 ];
 let cur="guias", q="";
 const tabsEl=document.getElementById("tabs");
@@ -2064,6 +2546,8 @@ function badge(it,cat){
   if(cat==="cocina") return `<span class="badge food">Plato</span>`;
   if(cat==="lotes") return `<span class="badge bundle">Sala</span>`;
   if(cat==="animales") return `<span class="badge animal">Animal</span>`;
+  if(cat==="artefactos") return `<span class="badge bundle">Museo</span>`;
+  if(cat==="notas") return `<span class="badge rare">Secreto</span>`;
   return "";
 }
 function metaLine(it,cat){
@@ -2075,6 +2559,8 @@ function metaLine(it,cat){
   if(cat==="cocina") return it.efecto;
   if(cat==="lotes") return it.recompensa;
   if(cat==="animales") return `${it.edif} · ${it.precio}`;
+  if(cat==="artefactos") return it.lugar;
+  if(cat==="notas") return it.tipo;
   return "";
 }
 function cardHTML(it,cat){
@@ -2100,6 +2586,8 @@ function openModal(cat,name){
   else if(cat==="cocina") rows=row("Ingredientes",it.ing)+row("Efecto",it.efecto)+row("Cómo conseguir receta",it.como);
   else if(cat==="lotes") rows=row("Recompensa",it.recompensa)+row("Cómo completarlo",it.como);
   else if(cat==="animales") rows=row("Vive en",it.edif)+row("Precio",it.precio)+row("Produce",it.prod);
+  else if(cat==="artefactos") rows=row("Dónde conseguir",it.lugar);
+  else if(cat==="notas") rows=row("Tipo",it.tipo);
   let extra="";
   if(cat==="aldeanos"){
     extra=`<div class="block"><div class="label">Le encanta (regalos)</div><div class="tags">${it.ama.map(a=>`<span class="tag love">${a}</span>`).join("")}</div></div>
